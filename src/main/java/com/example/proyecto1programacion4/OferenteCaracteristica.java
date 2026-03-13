@@ -1,25 +1,29 @@
 package com.example.proyecto1programacion4;
 
-@lombok.Getter
-@lombok.Setter@jakarta.persistence.Entity
-@jakarta.persistence.Table(name = "oferente_caracteristica")
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "oferente_caracteristica")
 public class OferenteCaracteristica {
-@jakarta.persistence.Id
-@jakarta.persistence.GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
-@jakarta.persistence.Column(name = "id", nullable = false)
-private java.lang.Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
-@jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-@jakarta.persistence.JoinColumn(name = "cedula_oferente")
-private com.example.proyecto1programacion4.Oferente cedulaOferente;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cedula_oferente")
+    private Oferente cedulaOferente;
 
-@jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-@jakarta.persistence.JoinColumn(name = "id_caracteristica")
-private com.example.proyecto1programacion4.Caracteristica idCaracteristica;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_caracteristica")
+    private Caracteristica idCaracteristica;
 
-@jakarta.persistence.Column(name = "nivel")
-private java.lang.Integer nivel;
-
+    @Column(name = "nivel")
+    private Integer nivel;
 
 
 }

@@ -1,38 +1,48 @@
 package com.example.proyecto1programacion4;
 
-@lombok.Getter
-@lombok.Setter@jakarta.persistence.Entity
-@jakarta.persistence.Table(name = "puesto")
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "puesto")
 public class Puesto {
-@jakarta.persistence.Id
-@jakarta.persistence.GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
-@jakarta.persistence.Column(name = "id", nullable = false)
-private java.lang.Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
-@jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-@jakarta.persistence.JoinColumn(name = "email_empresa")
-private com.example.proyecto1programacion4.Empresa emailEmpresa;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "email_empresa")
+    private Empresa emailEmpresa;
 
-@jakarta.validation.constraints.NotNull
-@jakarta.persistence.Lob
-@jakarta.persistence.Column(name = "descripcion", nullable = false)
-private java.lang.String descripcion;
+    @NotNull
+    @Lob
+    @Column(name = "descripcion", nullable = false)
+    private String descripcion;
 
-@jakarta.persistence.Column(name = "salario_ofrecido", precision = 10, scale = 2)
-private java.math.BigDecimal salarioOfrecido;
+    @Column(name = "salario_ofrecido", precision = 10, scale = 2)
+    private BigDecimal salarioOfrecido;
 
-@jakarta.validation.constraints.Size(max = 10)
-@jakarta.persistence.Column(name = "tipo_publicacion", length = 10)
-private java.lang.String tipoPublicacion;
+    @Size(max = 10)
+    @Column(name = "tipo_publicacion", length = 10)
+    private String tipoPublicacion;
 
-@org.hibernate.annotations.ColumnDefault("1")
-@jakarta.persistence.Column(name = "activo")
-private java.lang.Boolean activo;
+    @ColumnDefault("1")
+    @Column(name = "activo")
+    private Boolean activo;
 
-@org.hibernate.annotations.ColumnDefault("CURRENT_TIMESTAMP")
-@jakarta.persistence.Column(name = "fecha_publicacion")
-private java.time.Instant fechaPublicacion;
-
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "fecha_publicacion")
+    private Instant fechaPublicacion;
 
 
 }

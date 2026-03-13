@@ -1,28 +1,38 @@
 package com.example.proyecto1programacion4;
 
-@lombok.Getter
-@lombok.Setter@jakarta.persistence.Entity
-@jakarta.persistence.Table(name = "usuario")
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "usuario")
 public class Usuario {
-@jakarta.persistence.Id
-@jakarta.validation.constraints.Size(max = 100)
-@jakarta.persistence.Column(name = "email", nullable = false, length = 100)
-private java.lang.String email;
+    @Id
+    @Size(max = 100)
+    @Column(name = "email", nullable = false, length = 100)
+    private String email;
 
-@jakarta.validation.constraints.Size(max = 100)
-@jakarta.validation.constraints.NotNull
-@jakarta.persistence.Column(name = "clave", nullable = false, length = 100)
-private java.lang.String clave;
+    @Size(max = 100)
+    @NotNull
+    @Column(name = "clave", nullable = false, length = 100)
+    private String clave;
 
-@jakarta.validation.constraints.Size(max = 20)
-@jakarta.validation.constraints.NotNull
-@jakarta.persistence.Column(name = "tipo", nullable = false, length = 20)
-private java.lang.String tipo;
+    @Size(max = 20)
+    @NotNull
+    @Column(name = "tipo", nullable = false, length = 20)
+    private String tipo;
 
-@org.hibernate.annotations.ColumnDefault("0")
-@jakarta.persistence.Column(name = "estado")
-private java.lang.Boolean estado;
-
+    @ColumnDefault("0")
+    @Column(name = "estado")
+    private Boolean estado;
 
 
 }

@@ -1,36 +1,42 @@
 package com.example.proyecto1programacion4;
 
-@lombok.Getter
-@lombok.Setter@jakarta.persistence.Entity
-@jakarta.persistence.Table(name = "empresa")
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "empresa")
 public class Empresa {
-@jakarta.persistence.Id
-@jakarta.validation.constraints.Size(max = 100)
-@jakarta.persistence.Column(name = "email", nullable = false, length = 100)
-private java.lang.String email;
+    @Id
+    @Size(max = 100)
+    @Column(name = "email", nullable = false, length = 100)
+    private String email;
 
-@jakarta.persistence.MapsId
-@jakarta.persistence.OneToOne(fetch = jakarta.persistence.FetchType.LAZY, optional = false)
-@jakarta.persistence.JoinColumn(name = "email", nullable = false)
-private com.example.proyecto1programacion4.Usuario usuario;
+    @MapsId
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "email", nullable = false)
+    private Usuario usuario;
 
-@jakarta.validation.constraints.Size(max = 100)
-@jakarta.validation.constraints.NotNull
-@jakarta.persistence.Column(name = "nombre", nullable = false, length = 100)
-private java.lang.String nombre;
+    @Size(max = 100)
+    @NotNull
+    @Column(name = "nombre", nullable = false, length = 100)
+    private String nombre;
 
-@jakarta.validation.constraints.Size(max = 200)
-@jakarta.persistence.Column(name = "localizacion", length = 200)
-private java.lang.String localizacion;
+    @Size(max = 200)
+    @Column(name = "localizacion", length = 200)
+    private String localizacion;
 
-@jakarta.validation.constraints.Size(max = 20)
-@jakarta.persistence.Column(name = "telefono", length = 20)
-private java.lang.String telefono;
+    @Size(max = 20)
+    @Column(name = "telefono", length = 20)
+    private String telefono;
 
-@jakarta.persistence.Lob
-@jakarta.persistence.Column(name = "descripcion")
-private java.lang.String descripcion;
-
+    @Lob
+    @Column(name = "descripcion")
+    private String descripcion;
 
 
 }

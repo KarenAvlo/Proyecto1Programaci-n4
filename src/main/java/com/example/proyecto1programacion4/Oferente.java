@@ -1,44 +1,50 @@
 package com.example.proyecto1programacion4;
 
-@lombok.Getter
-@lombok.Setter@jakarta.persistence.Entity
-@jakarta.persistence.Table(name = "oferente")
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "oferente")
 public class Oferente {
-@jakarta.persistence.Id
-@jakarta.validation.constraints.Size(max = 20)
-@jakarta.persistence.Column(name = "cedula", nullable = false, length = 20)
-private java.lang.String cedula;
+    @Id
+    @Size(max = 20)
+    @Column(name = "cedula", nullable = false, length = 20)
+    private String cedula;
 
-@jakarta.validation.constraints.Size(max = 50)
-@jakarta.validation.constraints.NotNull
-@jakarta.persistence.Column(name = "nombre", nullable = false, length = 50)
-private java.lang.String nombre;
+    @Size(max = 50)
+    @NotNull
+    @Column(name = "nombre", nullable = false, length = 50)
+    private String nombre;
 
-@jakarta.validation.constraints.Size(max = 50)
-@jakarta.validation.constraints.NotNull
-@jakarta.persistence.Column(name = "apellido", nullable = false, length = 50)
-private java.lang.String apellido;
+    @Size(max = 50)
+    @NotNull
+    @Column(name = "apellido", nullable = false, length = 50)
+    private String apellido;
 
-@jakarta.validation.constraints.Size(max = 50)
-@jakarta.persistence.Column(name = "nacionalidad", length = 50)
-private java.lang.String nacionalidad;
+    @Size(max = 50)
+    @Column(name = "nacionalidad", length = 50)
+    private String nacionalidad;
 
-@jakarta.validation.constraints.Size(max = 20)
-@jakarta.persistence.Column(name = "telefono", length = 20)
-private java.lang.String telefono;
+    @Size(max = 20)
+    @Column(name = "telefono", length = 20)
+    private String telefono;
 
-@jakarta.validation.constraints.Size(max = 200)
-@jakarta.persistence.Column(name = "residencia", length = 200)
-private java.lang.String residencia;
+    @Size(max = 200)
+    @Column(name = "residencia", length = 200)
+    private String residencia;
 
-@jakarta.persistence.OneToOne(fetch = jakarta.persistence.FetchType.LAZY)
-@jakarta.persistence.JoinColumn(name = "email")
-private com.example.proyecto1programacion4.Usuario email;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "email")
+    private Usuario email;
 
-@jakarta.validation.constraints.Size(max = 255)
-@jakarta.persistence.Column(name = "curriculo_path")
-private java.lang.String curriculoPath;
-
+    @Size(max = 255)
+    @Column(name = "curriculo_path")
+    private String curriculoPath;
 
 
 }

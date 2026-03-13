@@ -1,4 +1,4 @@
-package com.example.proyecto1programacion4;
+package com.example.proyecto1programacion4.logic;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

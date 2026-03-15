@@ -19,10 +19,22 @@ public class Security {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Deshabilitamos CSRF para pruebas
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // Permite entrar a todas las rutas sin login
+                        .requestMatchers("/", "/index", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/login","/registro/**","/usuario/registrar").permitAll()
+                        .requestMatchers("/puestos/**").permitAll()
+                        .anyRequest().authenticated()
+                ) // <--- Aquí cerrabas el paréntesis de authorizeHttpRequests
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/")
+                        .permitAll()
                 );
+
         return http.build();
     }
 }

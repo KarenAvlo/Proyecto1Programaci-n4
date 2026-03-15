@@ -1,9 +1,17 @@
 package com.example.proyecto1programacion4.data;
 
 import com.example.proyecto1programacion4.logic.Usuario;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
-public interface AdministradorRepository extends  CrudRepository<Usuario, String> {
+public interface AdministradorRepository extends JpaRepository<Usuario, String> {
+
+    List<Usuario> findByTipo(String tipo);
+
+
+
 }

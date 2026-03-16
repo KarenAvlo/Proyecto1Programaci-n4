@@ -15,22 +15,33 @@
                     <h3 class="card-title text-center">Iniciar Sesión</h3>
                     <hr>
 
+                    <div th:if="${mensajeExito}" class="alert alert-success border-0 shadow-sm" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        <span th:text="${mensajeExito}"></span>
+                    </div>
+
+                    <div th:if="${param.error}" class="alert alert-danger" role="alert">
+                        Correo o contraseña incorrectos, o cuenta pendiente de activación.
+                    </div>
+
+                    <div th:if="${param.logout}" class="alert alert-info" role="alert">
+                        Has cerrado sesión correctamente.
+                    </div>
+
                     <div th:if="${error}" class="alert alert-danger" role="alert">
                         <span th:text="${error}"></span>
                     </div>
 
-                    <div th:if="${param.logout}" class="alert alert-success" role="alert">
-                        Has cerrado sesión correctamente.
-                    </div>
+
 
                     <form th:action="@{/login}" method="post">
                         <div class="mb-3">
                             <label class="form-label">Correo Electrónico</label>
-                            <input type="email" name="email" class="form-control" required>
+                            <input type="email" name="username" class="form-control" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Contraseña</label>
-                            <input type="password" name="clave" class="form-control" required>
+                            <input type="password" name="password" class="form-control" required>
                         </div>
                         <button type="submit" class="btn btn-primary w-100">Ingresar</button>
                     </form>

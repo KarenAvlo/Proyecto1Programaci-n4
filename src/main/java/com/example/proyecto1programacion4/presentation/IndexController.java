@@ -18,7 +18,7 @@ public class IndexController {
     }
 
     // Ruta para el botón "Registro Empresa"
-    @GetMapping("/registro/empresa")
+   /* @GetMapping("/registro/empresa")
     public String registroEmpresa() {
         return "form_empresa"; // Crea este HTML en templates
     }
@@ -27,5 +27,5 @@ public class IndexController {
     @GetMapping("/registro/oferente")
     public String registroOferente() {
         return "form_oferente"; // Crea este HTML en templates
-    }
+    }*/
 }

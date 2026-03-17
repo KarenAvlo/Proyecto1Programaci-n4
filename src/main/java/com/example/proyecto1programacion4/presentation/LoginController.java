@@ -36,10 +36,17 @@ public class LoginController {
             if ("ADMIN".equals(usuario.getTipo())) return "redirect:/admin/dashboard";
             if ("EMPRESA".equals(usuario.getTipo())) return "redirect:/empresa/perfil";
             return "redirect:/oferente/perfil";
+        }
+        catch (Exception e) {
 
-        } catch (Exception e) {
-            // AQUÍ es donde se crea la variable que el th:if busca
-            model.addAttribute("error", e.getMessage());
+            if (e.getMessage().contains("correo")) {
+                model.addAttribute("errorCorreo", e.getMessage());
+            } else if (e.getMessage().contains("clave")) {
+                model.addAttribute("errorClave", e.getMessage());
+            } else {
+                model.addAttribute("error", e.getMessage());
+            }
+
             return "login";
         }
     }

@@ -24,8 +24,8 @@ public class Security {
                         .requestMatchers("/", "/index", "/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/login","/registro/**","/usuario/registrar").permitAll()
                         .requestMatchers("/puestos/**").permitAll()
-                        .anyRequest().authenticated()
-                ) // <--- Aquí cerrabas el paréntesis de authorizeHttpRequests
+                        .anyRequest().permitAll() //  TODO abierto por ahora
+                )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .permitAll()
@@ -37,4 +37,16 @@ public class Security {
 
         return http.build();
     }
+
+   /* @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .formLogin()
+                .loginPage("/login")
+                .usernameParameter("username") //  aquí va el correo
+                .passwordParameter("password")
+                .defaultSuccessUrl("/", true)
+                .failureUrl("/login?error=true") //  importante
+                .permitAll();
+    }*/
 }

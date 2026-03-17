@@ -102,18 +102,31 @@ public class Service {
         return oferenteRepository.findById(email).orElse(null);
     }
 
-    @Transactional // Importante para que si falla uno, no se guarde el otro
+    @Transactional
     public void registrarOferente(Usuario usuario, Oferente oferente) {
-        // 1. Encriptamos la clave recibida del formulario
+
+        // Verificar si el correo ya existe
+        if (usuarioRepository.findById(usuario.getEmail()).isPresent()) {
+            throw new RuntimeException("El correo ya está registrado");
+        }
+
+        // Configurar Usuario
         usuario.setClave(passwordEncoder.encode(usuario.getClave()));
-
-        // 2. Valores por defecto
         usuario.setTipo("OFERENTE");
-        usuario.setEstado(false); // Pendiente de aprobación
+        usuario.setEstado(false);
 
-        // 3. Guardamos usuario y vinculamos con oferente
-        Usuario usuarioGuardado = administradorRepository.save(usuario);
+        // Guardar usuario primero
+        Usuario usuarioGuardado = usuarioRepository.save(usuario);
+
+        // ⚠ Validar que la cédula venga del formulario
+        if (oferente.getCedula() == null || oferente.getCedula().isEmpty()) {
+            throw new RuntimeException("La cédula es obligatoria");
+        }
+
+        // Asignar relación con Usuario
         oferente.setEmail(usuarioGuardado);
+
+        // Guardar Oferente
         oferenteRepository.save(oferente);
     }
 
@@ -149,18 +162,18 @@ public class Service {
         Usuario u = administradorRepository.findById(email).orElse(null);
 
         if (u==null ){
-            throw new Exception("El usuario no existe");
+            throw new Exception("correo no existe");
         }
 
         if (!passwordEncoder.matches(clave, u.getClave())) {
-            throw new Exception("Contraseña incorrecta.");
+            throw new Exception("clave incorrecta");
         }
 
         if(Boolean.FALSE.equals(u.getEstado())){
-            throw new Exception("Su cuenta no ha sido aprobada por el administrador aún");
+            throw new Exception("usuario no aprobado");
         }
 
-        return u; // si todo bien, devuelve suario
+        return u;
     }
 
 

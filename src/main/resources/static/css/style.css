@@ -1,0 +1,176 @@
+/* ===== BODY ===== */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+    background-color: #212529; /* bg-dark */
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar a {
+    color: white; /* text-white */
+    text-decoration: none;
+    margin-left: 15px;
+}
+
+/* ===== BOTONES ===== */
+.btn {
+    padding: 8px 16px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 14px;
+    display: inline-block;
+}
+
+/* btn-primary */
+.btn-primary {
+    background-color: #0d6efd;
+    color: white;
+}
+
+/* btn-outline-info */
+.btn-outline-info {
+    border: 1px solid #0dcaf0;
+    color: #0dcaf0;
+    background-color: transparent;
+}
+
+/* ===== CONTENEDOR ===== */
+.container {
+    width: 80%;
+    margin: auto;
+    margin-top: 50px;
+    text-align: center;
+}
+
+/* ===== TITULOS ===== */
+h1 {
+    font-size: 2.5rem;
+}
+
+/* ===== PÁRRAFOS ===== */
+p {
+    color: #6c757d; /* text-muted */
+}
+
+/* ===== CONTENEDOR LOGIN ===== */
+.form-container {
+    width: 400px;
+    margin: 80px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px #ccc;
+}
+
+/* espacio entre elementos */
+.form-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== INPUTS ===== */
+input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* ===== LABELS ===== */
+label {
+    font-weight: bold;
+}
+
+/* ===== BOTÓN ===== */
+button {
+    width: 100%;
+    border: none;
+    cursor: pointer;
+}
+
+/* reutiliza btn-primary */
+.btn-primary {
+    background-color: #0d6efd;
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+    border: none;
+    font-weight: bold;
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+}
+
+.bg-light {
+    background-color: #f8f9fa;
+}
+
+.form-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* ===== SOLO PARA FORMULARIOS GRANDES ===== */
+.form-container.form-large {
+    width: 500px; /* más ancho solo cuando se necesite */
+}
+
+/* ===== GRUPOS DE CAMPOS ===== */
+.form-group {
+    margin-bottom: 15px;
+}
+
+/* ===== LABELS ===== */
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* ===== INPUTS ===== */
+input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+}
+
+/* ===== BOTÓN ===== */
+button {
+    width: 100%;
+    padding: 10px;
+    font-size: 15px;
+    margin-top: 10px;
+}
+
+/* ===== TÍTULOS ===== */
+.form-container h2 {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.error {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.success {
+    color: green;
+    background-color: #d4edda;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    text-align: center;
+}

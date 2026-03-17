@@ -2,6 +2,8 @@ package com.example.proyecto1programacion4.presentation;
 
 
 import com.example.proyecto1programacion4.data.UsuarioRepository;
+import com.example.proyecto1programacion4.logic.Oferente;
+import com.example.proyecto1programacion4.logic.Service;
 import com.example.proyecto1programacion4.logic.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,6 +24,9 @@ public class RegistroController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    @Autowired
+    private Service service;
+
     @GetMapping("/empresa")
     public String mostrarFormEmpresa(){
         return "form_empresa";
@@ -33,34 +38,53 @@ public class RegistroController {
     }
 
     @PostMapping("/guardar")
-    public String guardarUsuario(@RequestParam String email, @RequestParam String clave, @RequestParam String nombre,
-    @RequestParam String tipo, Model model, RedirectAttributes redirectAttributes){
+    public String registrarOferente(
+            @RequestParam String email,
+            @RequestParam String clave,
+            @RequestParam String cedula,
+            Model model) {
 
-        //Primero debemos validar si el correo existe, no pueden haber 2 empresas con el mismo correo
-        if(usuarioRepository.findByEmail(email)!=null){
-            model.addAttribute("¡error!, Este correo ya está en uso. Por favor, intente con otro correo");
+        System.out.println("ENTRO AL REGISTRO OFERENTE");
+        System.out.println("EMAIL: " + email);
+        System.out.println("CLAVE: " + clave);
+        System.out.println("CEDULA: " + cedula);
 
-            //si hay error lo devolvemos al formulario que corresponde
+        try {
 
-            return tipo.equals("Empresa")? "form_empresa": "form_oferente";
+            // Validación básica
+            if (email.isEmpty() || clave.isEmpty()|| cedula.isEmpty()) {
+                model.addAttribute("errorCampos", "Todos los campos son obligatorios");
+                return "form_oferente";
+            }
+
+            // Crear objetos manualmente (IMPORTANTE)
+            Usuario usuario = new Usuario();
+            usuario.setEmail(email);
+            usuario.setClave(clave);
+
+            // Crear oferente
+            Oferente oferente = new Oferente();
+            oferente.setCedula(cedula); // ⚠️ Obligatorio para la PK
+            // otros campos se pueden rellenar después
+
+            // Llamar a TU método correcto
+            service.registrarOferente(usuario, oferente);
+
+            return "redirect:/login";
+
+        } catch (Exception e) {
+
+            String msg = e.getMessage().toLowerCase();
+
+            if (msg.contains("correo") || msg.contains("email")) {
+                model.addAttribute("errorCorreo", e.getMessage());
+            } else if (msg.contains("clave")) {
+                model.addAttribute("errorClave", e.getMessage());
+            } else {
+                model.addAttribute("error", e.getMessage());
+            }
+
+            return "form_oferente";
         }
-
-        //Siguiente paso es el nuevo usuario
-        Usuario nuevoUsuario= new Usuario();
-        nuevoUsuario.setEmail(email);
-        nuevoUsuario.setTipo(tipo); //EMPRESA O OFERENTE
-        nuevoUsuario.setEstado(false); //desactivado hasta que el admi apruebe
-
-        //encriptacion de la contraseña
-        String claveEncriptada=passwordEncoder.encode(clave);
-        nuevoUsuario.setClave(claveEncriptada);
-
-        //guardamos en la base de datos
-        usuarioRepository.save(nuevoUsuario);
-
-        //mensaje de éxito
-        redirectAttributes.addFlashAttribute("mensajeExito", "Registro completado con éxito. Espere a que el administrador active su cuenta.");
-        return "redirect:/login";
     }
-
 }

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${nombreEmpresa} + ' - Dashboard'">Dashboard</title>
+    <style>
+        /* Estilos exactos a la imagen */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Navbar Negra */
+        header {
+            background-color: #1a1a1a;
+            color: white;
+            padding: 10px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+        }
+
+        .nav-links a {
+            color: #b0b0b0;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .btn-salir {
+            border: 1px solid #444;
+            padding: 3px 10px;
+            border-radius: 3px;
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Contenido */
+        main {
+            flex: 1;
+            padding: 50px 80px;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-blue {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .btn-blue:hover {
+            background-color: #0056b3;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1a1a1a;
+            color: #888;
+            padding: 20px 80px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            border-top: 1px solid #333;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="nav-links">
+        <div class="logo">
+            <img src="/images/logo.png" alt="" style="width:25px; height:25px;"> BolsaEmpleo
+        </div>
+        <a th:href="@{/presentation/empresa/dashboard}">Dashboard</a>
+        <a th:href="@{/presentation/empresa/puestos/show}">Mis puestos</a>
+        <a th:href="@{/presentation/empresa/puestos/new}">Publicar puesto</a>
+    </div>
+    <div class="user-info">
+        <span>websoft@tuorg.com</span>
+        <a href="/logout" class="btn-salir">Salir</a>
+    </div>
+</header>
+
+<main>
+    <h1 th:text="${nombreEmpresa} + ' - Dashboard'">Empresa - Dashboard</h1>
+    <p class="subtitle">Desde aquí podés administrar tus puestos y buscar candidatos.</p>
+
+    <div class="button-container">
+        <a th:href="@{/presentation/empresa/puestos/show}" class="btn-blue">Ver mis puestos</a>
+        <a th:href="@{/presentation/empresa/puestos/new}" class="btn-blue">Publicar nuevo puesto</a>
+    </div>
+</main>
+
+<footer>
+    <div>
+        <strong>Bolsa de Empleo</strong><br>
+        Total Soft Inc.
+    </div>
+    <div style="text-align: right;">
+        Contacto: info@bolsaempleo.local<br>
+        Créditos: Equipo de desarrollo
+    </div>
+</footer>
+
+</body>
+</html>

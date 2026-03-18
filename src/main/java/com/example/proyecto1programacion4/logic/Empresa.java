@@ -11,14 +11,17 @@ import lombok.Setter;
 @Entity
 @Table(name = "empresa")
 public class Empresa {
-    @Id
+   /* @Id
     @Size(max = 100)
     @Column(name = "email", nullable = false, length = 100)
+    private String email;*/
+
+    @Id
     private String email;
 
     @MapsId
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "email", nullable = false)
+    @OneToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "email")
     private Usuario usuario;
 
     @Size(max = 100)

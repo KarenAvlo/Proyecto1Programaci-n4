@@ -3,10 +3,12 @@ package com.example.proyecto1programacion4.logic;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+@EnableWebSecurity
 public class Security {
     //esta clase es para la encriptacion de contraseñas en el login
 
@@ -17,23 +19,19 @@ public class Security {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.disable()) // <--- ESTO ES VITAL para que el POST funcione sin tokens
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/index", "/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/login","/registro/**","/usuario/registrar").permitAll()
-                        .requestMatchers("/puestos/**").permitAll()
-                        .anyRequest().permitAll() //  TODO abierto por ahora
+                        .requestMatchers("/", "/registro/**", "/css/**", "/js/**", "/login", "/registro/guardar").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
+                        .defaultSuccessUrl("/", true) // Agregado para que sepa a dónde ir tras el login
                         .permitAll()
                 )
-                .logout(logout -> logout
-                        .logoutSuccessUrl("/")
-                        .permitAll()
-                );
+                .logout(logout -> logout.permitAll());
 
         return http.build();
     }

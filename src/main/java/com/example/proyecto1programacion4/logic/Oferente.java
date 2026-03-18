@@ -38,6 +38,7 @@ public class Oferente {
     @Column(name = "residencia", length = 200)
     private String residencia;
 
+    @MapsId
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "email")
     private Usuario email;

@@ -7,48 +7,49 @@
 </head>
 <body class="bg-light">
 
-<div class="form-container">
-    <h2>Login</h2>
-
-    <!-- MENSAJE DE ÉXITO -->
-    <div th:if="${mensajeExito}">
-        <p class="success" th:text="${mensajeExito}"></p>
+<nav class="navbar">
+    <div>
+        <a th:href="@{/}">Bolsa de Empleo</a>
     </div>
+    <div>
+        <a th:href="@{/puestos/buscar}">Buscar Puestos</a>
+        <a class="btn btn-outline" th:href="@{/registro/empresa}">Registro Empresa</a>
+        <a class="btn btn-outline" th:href="@{/registro/oferente}">Registro Oferente</a>
+        <a th:href="@{/login}">Iniciar Sesión</a>
+    </div>
+</nav>
 
-    <form th:action="@{/login}" method="post">
+<div class="container">
+    <div class="form-container" style="max-width: 400px; margin: 50px auto;">
+        <h2>Iniciar Sesión</h2>
 
-        <!-- EMAIL -->
-        <label>Correo electrónico:</label>
-        <input type="email" name="username" required
-               placeholder="ejemplo@correo.com">
-
-        <!-- VALIDACIÓN HTML5 automática -->
-        <!-- type="email" ya valida formato -->
-
-        <!--  PASSWORD -->
-        <label>Contraseña:</label>
-        <input type="password" name="password" required minlength="6">
-
-        <!--  VALIDACIÓN HTML -->
-        <!-- required + minlength -->
-
-        <!--  ERROR DE SPRING SECURITY -->
-        <div th:if="${param.error}">
-            <p style="color:red;">
-                Correo o contraseña incorrectos
-            </p>
+        <div th:if="${param.success}" style="background-color: #d1ecf1; color: #0c5460; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 14px;">
+            Registro enviado correctamente. <strong>Su cuenta está pendiente de aprobación por el administrador.</strong>
         </div>
 
-        <!-- LOGOUT -->
-        <div th:if="${param.logout}">
-            <p style="color:green;">
-                Sesión cerrada correctamente
-            </p>
-        </div>
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label>Correo electrónico:</label>
+                <input type="email" name="username" required>
+            </div>
 
-        <button type="submit" class="btn btn-primary">Ingresar</button>
-    </form>
+            <div class="form-group">
+                <label>Contraseña:</label>
+                <input type="password" name="password" required>
+            </div>
+
+            <div th:if="${param.error}" style="color: red; font-size: 13px; margin-top: 10px;">
+                Error al ingresar. Verifique sus credenciales o si su cuenta ya fue activada.
+            </div>
+
+            <button type="submit" class="btn-primary" style="margin-top: 20px;">Entrar</button>
+        </form>
+    </div>
 </div>
+
+<footer style="background-color: #212529; color: white; text-align: center; padding: 20px; margin-top: 50px;">
+    <p>&copy; 2024 Bolsa de Empleo - Ingeniería Informática</p>
+</footer>
 
 </body>
 </html>

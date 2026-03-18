@@ -2,6 +2,7 @@ package com.example.proyecto1programacion4.presentation;
 
 
 import com.example.proyecto1programacion4.data.UsuarioRepository;
+import com.example.proyecto1programacion4.logic.Empresa;
 import com.example.proyecto1programacion4.logic.Oferente;
 import com.example.proyecto1programacion4.logic.Service;
 import com.example.proyecto1programacion4.logic.Usuario;
@@ -38,53 +39,41 @@ public class RegistroController {
     }
 
     @PostMapping("/guardar")
-    public String registrarOferente(
-            @RequestParam String email,
-            @RequestParam String clave,
-            @RequestParam String cedula,
+    public String guardar(
+            @RequestParam("email") String email,
+            @RequestParam("clave") String clave,
+            @RequestParam("tipo") String tipo,
+            @RequestParam(value = "cedula", required = false) String cedula,
+            @RequestParam(value = "nombre", required = false) String nombre,
+            @RequestParam(value = "apellido", required = false) String apellido,
             Model model) {
 
-        System.out.println("ENTRO AL REGISTRO OFERENTE");
-        System.out.println("EMAIL: " + email);
-        System.out.println("CLAVE: " + clave);
-        System.out.println("CEDULA: " + cedula);
-
         try {
+            Usuario u = new Usuario();
+            u.setEmail(email);
+            u.setClave(clave);
 
-            // Validación básica
-            if (email.isEmpty() || clave.isEmpty()|| cedula.isEmpty()) {
-                model.addAttribute("errorCampos", "Todos los campos son obligatorios");
-                return "form_oferente";
+            if ("OFERENTE".equals(tipo)) {
+                Oferente o = new Oferente();
+                o.setCedula(cedula);
+                o.setNombre(nombre);
+                o.setApellido(apellido);
+                service.registrarOferente(u, o);
+            } else if ("EMPRESA".equals(tipo)) {
+                Empresa e = new Empresa();
+                e.setNombre(nombre);
+                service.registrarEmpresa(u, e);
             }
 
-            // Crear objetos manualmente (IMPORTANTE)
-            Usuario usuario = new Usuario();
-            usuario.setEmail(email);
-            usuario.setClave(clave);
-
-            // Crear oferente
-            Oferente oferente = new Oferente();
-            oferente.setCedula(cedula); // ⚠️ Obligatorio para la PK
-            // otros campos se pueden rellenar después
-
-            // Llamar a TU método correcto
-            service.registrarOferente(usuario, oferente);
-
-            return "redirect:/login";
+            // Si llega aquí, todo salió BIEN
+            return "redirect:/login?success";
 
         } catch (Exception e) {
-
-            String msg = e.getMessage().toLowerCase();
-
-            if (msg.contains("correo") || msg.contains("email")) {
-                model.addAttribute("errorCorreo", e.getMessage());
-            } else if (msg.contains("clave")) {
-                model.addAttribute("errorClave", e.getMessage());
-            } else {
-                model.addAttribute("error", e.getMessage());
-            }
-
-            return "form_oferente";
+            // Si entra aquí, algo FALLÓ (por eso te quedas en el registro)
+            e.printStackTrace(); // MIRA TU CONSOLA DE IDE PARA VER EL ERROR REAL
+            model.addAttribute("error", "Error: " + e.getMessage());
+            return "EMPRESA".equals(tipo) ? "form_empresa" : "form_oferente";
         }
+
     }
 }

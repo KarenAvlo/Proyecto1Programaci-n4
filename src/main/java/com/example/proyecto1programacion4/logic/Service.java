@@ -34,7 +34,7 @@ public class Service {
         // Solo lo creamos si no existe ya, para no duplicar admins cada vez que reinicies
         if (usuarioRepository.findByEmail("admin@bolsa.com") == null) {
             crearAdminInicial();
-            System.out.println("-----> Administrador inicial creado: admin@bolsa.com / 123");
+            System.out.println("-----> Administrador inicial creado: admin@bolsa.com / 123456");
         }
     }
 
@@ -43,7 +43,7 @@ public class Service {
         Usuario admin = new Usuario();
         admin.setEmail("admin@bolsa.com");
         // Encriptamos la clave "123"
-        admin.setClave(passwordEncoder.encode("123"));
+        admin.setClave(passwordEncoder.encode("123456"));
         admin.setTipo("ADMIN");
         admin.setEstado(true); // El admin debe estar aprobado siempre
 
@@ -103,31 +103,20 @@ public class Service {
     }
 
     @Transactional
-    public void registrarOferente(Usuario usuario, Oferente oferente) {
-
-        // Verificar si el correo ya existe
-        if (usuarioRepository.findById(usuario.getEmail()).isPresent()) {
-            throw new RuntimeException("El correo ya está registrado");
+    public void registrarOferente(Usuario u, Oferente o) throws Exception {
+        // VALIDACIÓN: ¿Ya existe el correo?
+        if (usuarioRepository.existsById(u.getEmail())) {
+            throw new Exception("El correo electrónico ya se encuentra registrado.");
         }
 
-        // Configurar Usuario
-        usuario.setClave(passwordEncoder.encode(usuario.getClave()));
-        usuario.setTipo("OFERENTE");
-        usuario.setEstado(false);
+        u.setTipo("OFERENTE");
+        u.setEstado(false); //requiere aprobacion del admi
+        u.setClave(passwordEncoder.encode(u.getClave()));
 
-        // Guardar usuario primero
-        Usuario usuarioGuardado = usuarioRepository.save(usuario);
+        usuarioRepository.save(u); // Guardar padre
 
-        // ⚠ Validar que la cédula venga del formulario
-        if (oferente.getCedula() == null || oferente.getCedula().isEmpty()) {
-            throw new RuntimeException("La cédula es obligatoria");
-        }
-
-        // Asignar relación con Usuario
-        oferente.setEmail(usuarioGuardado);
-
-        // Guardar Oferente
-        oferenteRepository.save(oferente);
+        o.setEmail(u);
+        oferenteRepository.save(o); // Guardar hijo
     }
 
     //------------------------------EMPRESAS----------------------------
@@ -139,21 +128,30 @@ public class Service {
         return empresaRepository.findById(email).orElse(null);
     }
 
+    // ... dentro de la clase Service.java ...
+
     @Transactional
-    public void registrarEmpresa(Usuario u, Empresa e) {
-        //  Configurar los valores por defecto del usuario
+    public void registrarEmpresa(Usuario u, Empresa e) throws Exception {
+        // 1. Validación de duplicados
+        if (usuarioRepository.existsById(u.getEmail())) {
+            throw new Exception("El correo electrónico ya se encuentra registrado.");
+        }
+
+        // 2. Configuración del perfil de Usuario
         u.setTipo("EMPRESA");
-        u.setEstado(false); // Pendiente de aprobación
+        u.setEstado(false); // Requiere aprobación del admin según tu lógica
+        u.setClave(passwordEncoder.encode(u.getClave()));
 
-        //  Vincular ambos objetos
-        //  necesita tener el objeto usuario dentro
-        e.setUsuario(u);
-        e.setEmail(u.getEmail()); // Seteamos el ID manual si es necesario
+        // 3. Persistir el Usuario primero para que exista en la DB
+        // Esto es necesario porque Empresa depende de que este email ya exista
+        Usuario usuarioGuardado = usuarioRepository.save(u);
 
-        // 3. Guardar primero el Usuario (el padre)
-        administradorRepository.save(u);
+        // 4. Vincular la Empresa con el Usuario guardado
+        e.setUsuario(usuarioGuardado);
+        // IMPORTANTE: Con @MapsId, no es necesario hacer e.setEmail(...)
+        // Hibernate lo extraerá automáticamente de usuarioGuardado
 
-        // 4. Guardar la Empresa (el hijo que depende del ID del padre)
+        // 5. Guardar la Empresa
         empresaRepository.save(e);
     }
 

@@ -4,17 +4,16 @@ package com.example.proyecto1programacion4.presentation;
 import com.example.proyecto1programacion4.data.UsuarioRepository;
 import com.example.proyecto1programacion4.logic.Empresa;
 import com.example.proyecto1programacion4.logic.Oferente;
-import com.example.proyecto1programacion4.logic.Service;
+import com.example.proyecto1programacion4.logic.SecurityConfig;
 import com.example.proyecto1programacion4.logic.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/registro")
@@ -23,10 +22,11 @@ public class RegistroController {
     private UsuarioRepository usuarioRepository; //para buscar correos duplicados
 
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
+    //private BCryptPasswordEncoder passwordEncoder; //cambiarlo luego
 
     @Autowired
-    private Service service;
+    private SecurityConfig service;
 
     @GetMapping("/empresa")
     public String mostrarFormEmpresa(){
@@ -62,7 +62,7 @@ public class RegistroController {
             } else if ("EMPRESA".equals(tipo)) {
                 Empresa e = new Empresa();
                 e.setNombre(nombre);
-                service.registrarEmpresa(u, e);
+                service.registrarEmpresa(e);
             }
 
             // Si llega aquí, todo salió BIEN

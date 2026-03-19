@@ -1,7 +1,7 @@
 package com.example.proyecto1programacion4.presentation;
 
 
-import com.example.proyecto1programacion4.logic.Service;
+import com.example.proyecto1programacion4.logic.SecurityConfig;
 import com.example.proyecto1programacion4.logic.Usuario;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class LoginController {
 
      @Autowired
-    private Service service;
+    private SecurityConfig service;
 
      @GetMapping
     public String showLoginForm(){
@@ -32,9 +32,10 @@ public class LoginController {
             Usuario usuario = service.Login(email, clave);
             session.setAttribute("usuario", usuario);
 
+            System.out.println(usuario.getTipo());//revisar el tipo
             // Redirección por tipo
             if ("ADMIN".equals(usuario.getTipo())) return "redirect:/admin/dashboard";
-            if ("EMPRESA".equals(usuario.getTipo())) return "redirect:/empresa/perfil";
+            if ("EMPRESA".equals(usuario.getTipo())) return "redirect:/presentation/empresa/dashboard";
             return "redirect:/oferente/perfil";
         }
         catch (Exception e) {

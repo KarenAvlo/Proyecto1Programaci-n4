@@ -7,16 +7,28 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+//esto es para probar despues ahi que eleminarlo
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+//esto es para probar despues ahi que eleminarlo
+
 @Configuration
 @EnableWebSecurity
 public class Security {
     //esta clase es para la encriptacion de contraseñas en el login
 
 
+//    @Bean
+//    public BCryptPasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
+
+    //esto es para probar despues ahi que eleminarlo
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public PasswordEncoder passwordEncoder() {
+        return NoOpPasswordEncoder.getInstance(); // <--- ESTO ACEPTA TEXTO PLANO (No recomendado para el proyecto final)
     }
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

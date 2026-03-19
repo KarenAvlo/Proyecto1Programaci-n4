@@ -4,7 +4,7 @@ import com.example.proyecto1programacion4.data.*;//todos los repositorios
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.*;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Service("service")
-public class Service {
+public class SecurityConfig {
     @Autowired
     private  AdministradorRepository administradorRepository;
 
@@ -22,10 +22,13 @@ public class Service {
     @Autowired
     private EmpresaRepository empresaRepository;
 
-    @Autowired UsuarioRepository usuarioRepository; //para buscar email
+    @Autowired
+    private UsuarioRepository usuarioRepository; //para buscar email
 
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
+    //sustituir despues
+    //private BCryptPasswordEncoder passwordEncoder;
 
     //---------------ADMINISTRADORES-----------------------------------
 
@@ -81,7 +84,7 @@ public class Service {
         // Obtenemos todos los oferentes y filtramos los que tienen usuario con estado false
         return oferenteRepository.findAll()
                 .stream()
-                .filter(o -> o.getEmail() != null && Boolean.FALSE.equals(o.getEmail().getEstado()))
+                .filter(o -> o.getEstado() != null && Boolean.FALSE.equals(o.getEstado()))
                 .collect(Collectors.toList());
     }
 
@@ -89,7 +92,7 @@ public class Service {
         // Obtenemos todas las empresas y filtramos las que tienen usuario con estado false
         return empresaRepository.findAll()
                 .stream()
-                .filter(e -> e.getUsuario() != null && Boolean.FALSE.equals(e.getUsuario().getEstado()))
+                .filter(e -> e.getEstado() != null && Boolean.FALSE.equals(e.getEstado()))
                 .collect(Collectors.toList());
     }
 
@@ -115,7 +118,7 @@ public class Service {
 
         usuarioRepository.save(u); // Guardar padre
 
-        o.setEmail(u);
+        o.setEmail(u.getEmail());
         oferenteRepository.save(o); // Guardar hijo
     }
 
@@ -131,33 +134,35 @@ public class Service {
     // ... dentro de la clase Service.java ...
 
     @Transactional
-    public void registrarEmpresa(Usuario u, Empresa e) throws Exception {
+    public void registrarEmpresa(Empresa e) throws Exception {
         // 1. Validación de duplicados
-        if (usuarioRepository.existsById(u.getEmail())) {
+        if (usuarioRepository.existsById(e.getEmail())) {
             throw new Exception("El correo electrónico ya se encuentra registrado.");
         }
 
         // 2. Configuración del perfil de Usuario
-        u.setTipo("EMPRESA");
-        u.setEstado(false); // Requiere aprobación del admin según tu lógica
-        u.setClave(passwordEncoder.encode(u.getClave()));
+        e.setTipo("EMPRESA");
+        e.setEstado(false); // Requiere aprobación del admin según tu lógica
+        e.setClave(passwordEncoder.encode(e.getClave()));
+
+        // 3. Persistir SOLO la Empresa
+        // Hibernate hará los dos INSERTs automáticamente (tabla usuario y tabla empresa)
+        empresaRepository.save(e);
 
         // 3. Persistir el Usuario primero para que exista en la DB
         // Esto es necesario porque Empresa depende de que este email ya exista
-        Usuario usuarioGuardado = usuarioRepository.save(u);
-
+        //Usuario usuarioGuardado = usuarioRepository.save(u); //no es necesario gracias a la erencia
         // 4. Vincular la Empresa con el Usuario guardado
-        e.setUsuario(usuarioGuardado);
+        //e.setUsuario(usuarioGuardado); //no es necesario gracias a la erencia
         // IMPORTANTE: Con @MapsId, no es necesario hacer e.setEmail(...)
         // Hibernate lo extraerá automáticamente de usuarioGuardado
-
         // 5. Guardar la Empresa
-        empresaRepository.save(e);
     }
 
     //-------LOGIN----------
     public Usuario Login(String email,String clave) throws Exception{
-        Usuario u = administradorRepository.findById(email).orElse(null);
+        //Usuario u = administradorRepository.findById(email).orElse(null);
+        Usuario u = usuarioRepository.findById(email).orElse(null);
 
         if (u==null ){
             throw new Exception("correo no existe");
@@ -173,7 +178,4 @@ public class Service {
 
         return u;
     }
-
-
-
 }

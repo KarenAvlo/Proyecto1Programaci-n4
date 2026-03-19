@@ -1,10 +1,223 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${nombreOferente} + ' - Dashboard'">Oferente - Dashboard</title>
+    <style>
+        /* Configuración Global */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header Oscuro Estilo Imagen */
+        header {
+            background-color: #1a1a1a;
+            color: white;
+            padding: 10px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .logo-icon {
+            width: 30px;
+            height: 30px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a1a1a;
+            font-size: 0.8rem;
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            color: #b0b0b0;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #ffffff;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .btn-salir {
+            border: 1px solid #444;
+            padding: 4px 12px;
+            border-radius: 4px;
+            color: white;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .btn-salir:hover {
+            background-color: #333;
+        }
+
+        /* Contenido Principal */
+        main {
+            flex: 1;
+            padding: 60px 100px;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin: 0 0 10px 0;
+            color: #222;
+        }
+
+        .subtitle {
+            color: #777;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        /* Botones Azules */
+        .actions-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn-blue {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+            transition: background 0.3s;
+        }
+
+        .btn-blue:hover {
+            background-color: #0056b3;
+        }
+
+        /* Feedback de subida */
+        .alert-info {
+            margin-top: 20px;
+            color: #0056b3;
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        /* Footer Oscuro */
+        footer {
+            background-color: #1a1a1a;
+            color: #888;
+            padding: 25px 100px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            border-top: 1px solid #333;
+        }
+
+        .footer-brand {
+            font-weight: bold;
+            color: #bbb;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .footer-right {
+            text-align: right;
+            line-height: 1.6;
+        }
+    </style>
 </head>
 <body>
+
+<header>
+    <div class="nav-left">
+        <div class="logo-container">
+            <div class="logo-icon">BE</div>
+            BolsaEmpleo
+        </div>
+        <nav>
+            <a th:href="@{/presentation/oferente/dashboard}">Dashboard</a>
+            <a th:href="@{/presentation/oferente/habilidades/view}">Mis habilidades</a>
+            <a href="#">Mi CV</a>
+        </nav>
+    </div>
+    <div class="nav-right">
+        <span th:text="${correoOferente != null ? correoOferente : 'usuario@correo.com'}">jsanchez@sanchez.com</span>
+        <a href="/logout" class="btn-salir">Salir</a>
+    </div>
+</header>
+
+<main>
+    <h1 th:text="${nombreOferente} + ' - Dashboard'">Oferente - Dashboard</h1>
+    <p class="subtitle">Administra tus habilidades y tu CV.</p>
+
+    <div class="actions-container">
+        <a th:href="@{/presentation/oferente/habilidades/view}" class="btn-blue">Mis habilidades</a>
+
+        <form th:action="@{/presentation/oferente/cv/upload}" method="post" enctype="multipart/form-data" id="cvForm">
+            <label for="cv-file" class="btn-blue">
+                Mi CV
+            </label>
+            <input type="file" id="cv-file" name="file" accept="application/pdf"
+                   style="display: none;" onchange="document.getElementById('cvForm').submit();">
+        </form>
+    </div>
+
+    <div th:if="${mensaje}" class="alert-info">
+        <p th:text="${mensaje}"></p>
+    </div>
+</main>
+
+<footer>
+    <div>
+        <span class="footer-brand">Bolsa de Empleo</span>
+        Total Soft Inc.
+    </div>
+    <div class="footer-right">
+        Contacto: info@bolsaempleo.local<br>
+        Créditos: Equipo de desarrollo
+    </div>
+</footer>
 
 </body>
 </html>

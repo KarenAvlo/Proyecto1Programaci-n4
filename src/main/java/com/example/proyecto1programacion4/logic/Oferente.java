@@ -10,8 +10,8 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "oferente")
-public class Oferente {
-    @Id
+public class Oferente extends Usuario{
+    //@Id
     @Size(max = 20)
     @Column(name = "cedula", nullable = false, length = 20)
     private String cedula;
@@ -38,10 +38,10 @@ public class Oferente {
     @Column(name = "residencia", length = 200)
     private String residencia;
 
-    @MapsId
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "email")
-    private Usuario email;
+    //@MapsId
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "email")
+//    private Usuario email;
 
     @Size(max = 255)
     @Column(name = "curriculo_path")

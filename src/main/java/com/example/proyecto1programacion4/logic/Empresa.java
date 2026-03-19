@@ -10,19 +10,14 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "empresa")
-public class Empresa {
-   /* @Id
-    @Size(max = 100)
-    @Column(name = "email", nullable = false, length = 100)
-    private String email;*/
+public class Empresa extends Usuario{
 
-    @Id
-    private String email;
-
-    @MapsId
-    @OneToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "email")
-    private Usuario usuario;
+//    @Id
+//    private String email;
+//    @MapsId
+//    @OneToOne(fetch = FetchType.EAGER, optional = false)
+//    @JoinColumn(name = "email")
+//    private Usuario usuario;
 
     @Size(max = 100)
     @NotNull

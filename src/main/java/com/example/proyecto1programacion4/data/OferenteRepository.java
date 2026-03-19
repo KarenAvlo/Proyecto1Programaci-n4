@@ -12,6 +12,6 @@ import java.util.List;
 public interface OferenteRepository extends JpaRepository<Oferente,String> {
 
 
-    @Query("SELECT o FROM Oferente o WHERE o.email.estado = false")
+    @Query("SELECT o FROM Oferente o WHERE o.estado = false")
     List<Oferente> findPendientes();
 }

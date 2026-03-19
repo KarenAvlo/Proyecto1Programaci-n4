@@ -12,6 +12,4 @@ public interface AdministradorRepository extends JpaRepository<Usuario, String> 
 
     List<Usuario> findByTipo(String tipo);
 
-
-
 }

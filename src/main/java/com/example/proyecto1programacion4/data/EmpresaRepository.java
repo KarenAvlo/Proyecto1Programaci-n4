@@ -12,7 +12,7 @@ import java.util.List;
 public interface EmpresaRepository extends JpaRepository<Empresa,String> {
 
     // Buscamos empresas cuyo usuario asociado tenga estado = false (0)
-    @Query("SELECT e FROM Empresa e WHERE e.usuario.estado = false")
+    @Query("SELECT e FROM Empresa e WHERE e.estado = false")
     List<Empresa> findPendientes();
 
 }

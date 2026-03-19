@@ -2,10 +2,7 @@ package com.example.proyecto1programacion4.presentation;
 
 
 import com.example.proyecto1programacion4.data.UsuarioRepository;
-import com.example.proyecto1programacion4.logic.Empresa;
-import com.example.proyecto1programacion4.logic.Oferente;
-import com.example.proyecto1programacion4.logic.SecurityConfig;
-import com.example.proyecto1programacion4.logic.Usuario;
+import com.example.proyecto1programacion4.logic.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -26,7 +23,7 @@ public class RegistroController {
     //private BCryptPasswordEncoder passwordEncoder; //cambiarlo luego
 
     @Autowired
-    private SecurityConfig service;
+    private LogicService service;
 
     @GetMapping("/empresa")
     public String mostrarFormEmpresa(){

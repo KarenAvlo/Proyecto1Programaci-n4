@@ -27,12 +27,12 @@ public class EmpresaController {
     @GetMapping("/show")
     public String showPuestos(Model model){
         //model.addAttribute("puestos", service.puestosPorEmpresa());//busca todos los puestos asociados a una empresa
-        return "/presentation/empresa/PuestosView";
+        return "PuestosView";
     }
 
     @GetMapping("/new")
     public String newPuesto(Model model){
         model.addAttribute("puesto", new Puesto());
-        return "/presentation/empresa/PuestoForm";
+        return "PuestoForm";
     }
 }

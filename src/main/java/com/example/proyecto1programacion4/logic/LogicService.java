@@ -1,14 +1,11 @@
 package com.example.proyecto1programacion4.logic;
 
-import com.example.proyecto1programacion4.data.AdministradorRepository;
-import com.example.proyecto1programacion4.data.EmpresaRepository;
-import com.example.proyecto1programacion4.data.OferenteRepository;
+import com.example.proyecto1programacion4.data.*;
 import jakarta.annotation.PostConstruct;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.example.proyecto1programacion4.data.UsuarioRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +29,15 @@ public class LogicService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private PuestoRepository puestoRepository;
+
+    @Autowired
+    private RequisitoRepository requisitoRepository;
+
+    @Autowired
+    private CaracteristicaRepository caracteristicaRepository;
 
     // --------------- INICIALIZACIÓN ----------------
     @PostConstruct
@@ -109,17 +115,20 @@ public class LogicService {
         }
     }
 
-    // --------------- LÓGICA DE OFERENTES ----------------
-    public void registrarOferente(Usuario u, Oferente o) throws Exception {
-        if (usuarioRepository.existsById(u.getEmail())) {
+
+// --------------- LÓGICA DE OFERENTES ----------------
+    public void registrarOferente(Oferente o) throws Exception {
+        if (usuarioRepository.existsById(o.getEmail())) {
             throw new Exception("El correo ya existe.");
         }
-        u.setTipo("OFERENTE");
-        u.setEstado(false);
-        u.setClave(passwordEncoder.encode(u.getClave()));
 
-        usuarioRepository.save(u);
-        o.setEmail(u.getEmail());
+        // Configuramos los campos heredados de Usuario dentro del objeto Oferente
+        o.setTipo("OFERENTE");
+        o.setEstado(false);
+        o.setClave(passwordEncoder.encode(o.getClave()));
+
+        // Al guardar el oferente, JPA guarda automáticamente en la tabla 'usuario'
+        // y en la tabla 'oferente' por la herencia JOINED.
         oferenteRepository.save(o);
     }
 
@@ -143,4 +152,52 @@ public class LogicService {
     public List<Usuario> findOferentesPendientes() {
         return usuarioRepository.findByTipoAndEstado("OFERENTE", false);
     }
+
+    //================PUESTOS=============================
+// Listar solo los puestos de una empresa específica
+    public List<Puesto> listarPuestosPorEmpresa(Empresa empresa) {
+        return puestoRepository.findByEmailEmpresa(empresa);
+    }
+
+    // Buscar un puesto por ID (útil para desactivar)
+    public Puesto buscarPuestoPorId(Integer id) {
+        return puestoRepository.findById(id).orElse(null);
+    }
+
+    // El método de guardar (que ya tienes) sirve para actualizar el estado 'activo'
+    public void actualizarPuesto(Puesto p) {
+        puestoRepository.save(p);
+    }
+
+    // Busca la empresa para asignarla al puesto
+    public Empresa buscarEmpresaPorEmail(String email) {
+        return empresaRepository.findById(email).orElse(null);
+    }
+
+    // Guarda el puesto y retorna el objeto con su ID generado
+    public Puesto guardarPuesto(Puesto puesto) {
+        return puestoRepository.save(puesto);
+    }
+
+    // Guarda cada característica vinculada al puesto
+    public void guardarRequisito(Puesto puesto, String nombre, Integer nivel) {
+        Requisito req = new Requisito();
+        req.setPuesto(puesto);
+        req.setNombre(nombre);
+        req.setNivel(nivel);
+        requisitoRepository.save(req);
+    }
+
+    // Este método lo usa tu EmpresaController.showPuestos
+    public List<Puesto> findPuestosPorEmpresa(String email) {
+        Empresa e = empresaRepository.findById(email).orElse(null);
+        return puestoRepository.findByEmailEmpresa(e);
+    }
+
+    // En LogicService.java
+    public List<Caracteristica> listarCaracteristicasAdmin() {
+
+        return caracteristicaRepository.findAll();
+    }
+
 }

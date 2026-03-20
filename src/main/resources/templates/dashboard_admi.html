@@ -22,26 +22,18 @@
             <a th:href="@{/admin/oferentes-pendientes}">Oferentes Pendientes</a>
             <a th:href="@{/admin/caracteristicas}">Características</a>
             <a th:href="@{/admin/caracteristicas}">Reportes</a> <!--arreglar-->
-            <a th:href="@{/logout}">Salir</a>
 
+            <span style="color: white; text-decoration: none;" th:text="${correoUsuario}">
+            usuario@correo.com
+        </span>
 
+            <a th:href="@{/logout}"
+               style="color: white; text-decoration: none; border: 1px solid white; padding: 4px 12px; border-radius: 4px;">
+                Salir
+            </a>
         </div>
+
     </nav>
-
-
-   <!-- <nav class="navbar">
-        <div>
-            <a th:href="@{/}">Bolsa de Empleo</a>
-        </div>
-        <div>
-            <a th:href="@{/admin/dashboard}">Dashboard</a>
-            <a th:href="@{/admin/empresas-pendientes}">Empresas Pendientes</a>
-            <a th:href="@{/admin/oferentes-pendientes}">Oferentes Pendientes</a>
-            <a th:href="@{/admin/caracteristicas}">Características</a>
-            <a th:href="@{/admin/caracteristicas}">Reportes</a>
-            <a th:href="@{/logout}" style="color: #ff4d4d; margin-left: 20px;">Salir</a>
-        </div>
-    </nav>-->
 
     <main class="admin-content">
         <h1 style="text-align: left; font-size: 2.5rem; margin-bottom: 0;"> Administrador</h1>

@@ -32,6 +32,10 @@ public class Puesto {
     @Column(name = "salario_ofrecido", precision = 10, scale = 2)
     private BigDecimal salarioOfrecido;
 
+    @Size(max = 3)
+    @Column(name = "moneda", length = 3)
+    private String moneda;
+
     @Size(max = 10)
     @Column(name = "tipo_publicacion", length = 10)
     private String tipoPublicacion;
@@ -40,7 +44,7 @@ public class Puesto {
     @Column(name = "activo")
     private Boolean activo;
 
-//    @ColumnDefault("CURRENT_TIMESTAMP")
+    //    @ColumnDefault("CURRENT_TIMESTAMP")
 //    @Column(name = "fecha_publicacion")
     @Column(name = "fecha_publicacion", updatable = false)
     @org.hibernate.annotations.CreationTimestamp

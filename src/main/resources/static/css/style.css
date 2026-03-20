@@ -503,3 +503,282 @@ footer {
     border-color: #0d6efd;
     color: #0d6efd;
 }
+
+/*------*/
+main {
+    padding: 40px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.table-admin {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: white;
+}
+
+.table-admin th {
+    text-align: left;
+    border-bottom: 2px solid #dee2e6;
+    padding: 12px;
+    color: #212529;
+}
+
+.table-admin td {
+    padding: 15px 12px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Botón verde de la imagen */
+.btn-approve {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-approve:hover {
+    background-color: #218838;
+}
+
+/* Ajuste para que el correo se vea igual a los links del nav */
+.user-email {
+    color: white;
+    margin-right: 15px;
+    font-size: 0.9rem;
+}
+
+/*--------------------------------------*/
+     /* Estilos para la tabla y el formulario que no están en el CSS global */
+
+.container-green {
+    background-color: #f0fff4; /* Verde muy claro */
+    border-radius: 15px;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+    height: fit-content;
+}
+
+.breadcrumb-item {
+    background: white;
+    border: 1px solid #cbd5e0;
+    padding: 5px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #4a5568;
+    font-size: 0.9rem;
+}
+
+.list-item-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    padding: 12px 20px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-entrar {
+    border: 1px solid #4299e1;
+    color: #4299e1;
+    background: white;
+    padding: 5px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.btn-entrar:hover {
+    background: #4299e1;
+    color: white;
+}
+
+.btn-crear {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.dashboard-container {
+    padding: 60px 10%;
+    background-color: #ffffff;
+    min-height: 60vh;
+}
+
+.title-main {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.subtitle-main {
+    color: #666;
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+}
+
+/* BOTONES AZULES COMO LA IMAGEN */
+.btn-group {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-custom-blue {
+    background-color: #007bff; /* El azul de la imagen */
+    color: white;
+    padding: 12px 25px;
+    border-radius: 8px; /* Bordes redondeados suaves */
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    border: none;
+    transition: background-color 0.2s, transform 0.1s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+.btn-custom-blue:hover {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+}
+
+/* ===================*/
+
+     /* Estilos para igualar la imagen de referencia */
+ .puestos-container {
+     padding: 50px 10%;
+     background-color: #f8f9fa;
+     min-height: 70vh;
+ }
+
+.title-section h1 {
+    font-size: 2.2rem;
+    margin-bottom: 20px;
+    color: #212529;
+}
+
+/* Botón azul principal */
+.btn-custom-blue {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 30px;
+    border: none;
+    transition: background-color 0.2s;
+}
+
+.btn-custom-blue:hover {
+    background-color: #0056b3;
+}
+
+/* Tabla estilizada */
+.table-custom {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.table-custom th {
+    text-align: left;
+    padding: 15px;
+    background-color: #fff;
+    border-bottom: 2px solid #dee2e6;
+    color: #495057;
+    font-weight: bold;
+}
+
+.table-custom td {
+    padding: 15px;
+    border-bottom: 1px solid #dee2e6;
+    color: #333;
+    vertical-align: middle;
+}
+
+/* Badge para estado Activo */
+.badge-activo {
+    background-color: #28a745;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+/* Botones de acción en la tabla */
+.btn-desactivar {
+    color: #dc3545;
+    border: 1px solid #dc3545;
+    padding: 6px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    background: transparent;
+    transition: all 0.2s;
+}
+
+.btn-desactivar:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-buscar-candidatos {
+    background-color: #007bff;
+    color: white;
+    padding: 7px 14px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-left: 10px;
+    display: inline-block;
+}
+
+.btn-buscar-candidatos:hover {
+    background-color: #0056b3;
+}
+.admin-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.title-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.btn-custom-blue {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.btn-buscar-candidatos {
+    background-color: #007bff;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    margin-left: 10px;
+}
+
+.text-right { text-align: right; }

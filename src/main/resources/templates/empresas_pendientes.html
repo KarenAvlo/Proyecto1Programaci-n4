@@ -2,154 +2,77 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administrador - Empresas Pendientes</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
-    <style>
-        /* Ajustes para replicar la imagen y eliminar el borde blanco */
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
 
-        header {
-            background-color: #1a1a1a; /* bg-dark de la imagen */
-            color: white;
-            padding: 10px 60px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-left {
-            display: flex;
-            align-items: center;
-            gap: 25px;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: bold;
-        }
-
-        .logo-icon {
-            width: 30px; height: 30px;
-            background-color: white;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            color: #1a1a1a; font-size: 0.8rem;
-        }
-
-        nav a {
-            color: #b0b0b0;
-            text-decoration: none;
-            margin-right: 15px;
-            font-size: 14px;
-        }
-
-        main {
-            flex: 1;
-            padding: 60px 100px; /* Espaciado centrado de la imagen */
-        }
-
-        /* Estilo de la tabla basado en la captura */
-        .table-admin {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 30px;
-        }
-
-        .table-admin th {
-            text-align: left;
-            border-bottom: 2px solid #eee;
-            padding: 10px;
-            color: #333;
-        }
-
-        .table-admin td {
-            padding: 15px 10px;
-            border-bottom: 1px solid #f5f5f5;
-        }
-
-        .btn-approve {
-            background-color: #28a745; /* Verde como en la imagen */
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        footer {
-            background-color: #1a1a1a;
-            color: #888;
-            padding: 25px 100px;
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-        }
-    </style>
 </head>
-<body>
+<body class="bg-light">
 
-<header>
-    <div class="nav-left">
-        <div class="logo-container">
-            <div class="logo-icon">BE</div>
-            BolsaEmpleo
+<div class="admin-wrapper">
+    <nav class="navbar">
+        <div>
+            <a th:href="@{/}">Bolsa de Empleo</a>
         </div>
-        <nav>
+
+        <div>
             <a th:href="@{/admin/dashboard}">Dashboard</a>
-            <a th:href="@{/admin/empresas-pendientes}" style="color: white;">Empresas pendientes</a>
-            <a th:href="@{/admin/oferentes-pendientes}">Oferentes pendientes</a>
+            <a th:href="@{/admin/empresas-pendientes}">Empresas Pendientes</a>
+            <a th:href="@{/admin/oferentes-pendientes}">Oferentes Pendientes</a>
             <a th:href="@{/admin/caracteristicas}">Características</a>
-            <a href="#">Reportes</a>
-        </nav>
-    </div>
-    <div style="font-size: 14px;">
-        <span th:text="${session.usuario.email}">admin@tuorg.com</span>
-        <a href="/logout" style="color: white; border: 1px solid #444; padding: 4px 10px; border-radius: 4px; text-decoration: none; margin-left: 10px;">Salir</a>
-    </div>
-</header>
+            <a th:href="@{/admin/reportes}">Reportes</a>
 
-<main>
-    <h1>Empresas pendientes</h1>
+            <span style="color: white; text-decoration: none; margin-left: 15px;" th:text="${correoUsuario}">
+                usuario@correo.com
+            </span>
 
-    <table class="table-admin">
-        <thead>
-        <tr>
-            <th>Usuario</th>
-            <th>Acción</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="emp : ${empresas}">
-            <td th:text="${emp.email}">rrhh@softlab.com</td>
-            <td>
-                <form th:action="@{/admin/autorizar/{email}(email=${emp.email})}" method="post">
-                    <button type="submit" class="btn-approve">Aprobar </button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</main>
+            <a th:href="@{/logout}"
+               style="color: white; text-decoration: none; border: 1px solid white; padding: 4px 12px; border-radius: 4px; margin-left: 10px;">
+                Salir
+            </a>
+        </div>
+    </nav>
 
-<footer class="footer-dark">
-    <div>
-        <strong>Bolsa de Empleo</strong><br>
-        Total Soft Inc.
-    </div>
-    <div style="text-align: right; line-height: 1.4;">
-        Contacto: info@bolsaempleo.local<br>
-        © 2026
-    </div>
-</footer>
+    <main class="admin-content">
+        <h1 style="text-align: left; font-size: 2.5rem; margin-bottom: 10px;">Empresas Pendientes</h1>
+        <p style="text-align: left; color: #666; margin-bottom: 30px;">Lista de empresas que esperan aprobación para acceder al sistema.</p>
+
+        <table class="table-admin">
+            <thead>
+            <tr>
+                <th>Usuario (Email)</th>
+                <th>Acción</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="emp : ${empresas}">
+                <td th:text="${emp.email}">rrhh@ejemplo.com</td>
+                <td>
+                    <form th:action="@{/admin/autorizar/{email}(email=${emp.email})}" method="post">
+                        <input type="hidden" name="tipo" value="EMPRESA">
+                        <button type="submit" class="btn-approve">Aprobar</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(empresas)}">
+                <td colspan="2" style="text-align: center; padding: 30px; color: #999;">
+                    No hay empresas pendientes por el momento.
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </main>
+
+    <footer class="footer-dark">
+        <div>
+            <strong>Bolsa de Empleo</strong><br>
+            Total Soft Inc.
+        </div>
+        <div style="text-align: right; line-height: 1.4;">
+            Contacto: info@bolsaempleo.local<br>
+            © 2026
+        </div>
+    </footer>
+</div>
 
 </body>
 </html>

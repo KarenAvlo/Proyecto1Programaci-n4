@@ -43,6 +43,9 @@ public class RegistroController {
             @RequestParam(value = "cedula", required = false) String cedula,
             @RequestParam(value = "nombre", required = false) String nombre,
             @RequestParam(value = "apellido", required = false) String apellido,
+            @RequestParam(value = "telefono", required = false) String telefono,
+            @RequestParam(value = "localizacion", required = false) String localizacion,
+            @RequestParam(value = "descripcion", required = false) String descripcion,
             Model model) {
 
         try {
@@ -58,14 +61,18 @@ public class RegistroController {
                 o.setCedula(cedula);
                 o.setNombre(nombre);
                 o.setApellido(apellido);
-                service.registrarOferente(u, o);
+                service.registrarOferente(o);
             } else if ("EMPRESA".equals(tipo)) {
-                System.out.println("Email recibido: " + u.getEmail());
                 Empresa e = new Empresa();
                 e.setEmail(email);
                 e.setClave(clave);
                 e.setNombre(nombre);
                 e.setTipo("EMPRESA");
+                // --- ASIGNACIÓN DE LOS NUEVOS CAMPOS ---
+                e.setTelefono(telefono);
+                e.setLocalizacion(localizacion);
+                e.setDescripcion(descripcion);
+                // ---------------------------------------
                 service.registrarEmpresa(e);
             }
 

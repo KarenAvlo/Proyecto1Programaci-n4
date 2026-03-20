@@ -34,7 +34,6 @@ public class SecurityConfig {
                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/empresa/**").hasRole("EMPRESA")
                         .requestMatchers("/oferente/**").hasRole("OFERENTE")
-                        .requestMatchers("/puestos/buscar", "/registro/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

@@ -136,15 +136,11 @@ public class LogicService {
     }
 
     // --------------- DASHBOARD FILTROS ----------------
-    public List<Oferente> findOferentesPendientes() {
-        return oferenteRepository.findAll().stream()
-                .filter(o -> Boolean.FALSE.equals(o.getEstado()))
-                .collect(Collectors.toList());
+    public List<Usuario> findEmpresasPendientes() {
+        return usuarioRepository.findByTipoAndEstado("EMPRESA", false);
     }
 
-    public List<Empresa> findEmpresasPendientes() {
-        return empresaRepository.findAll().stream()
-                .filter(e -> Boolean.FALSE.equals(e.getEstado()))
-                .collect(Collectors.toList());
+    public List<Usuario> findOferentesPendientes() {
+        return usuarioRepository.findByTipoAndEstado("OFERENTE", false);
     }
 }

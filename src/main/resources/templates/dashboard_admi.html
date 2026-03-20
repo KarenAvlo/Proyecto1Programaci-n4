@@ -1,220 +1,72 @@
+
+
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administrador - Dashboard</title>
+    <title>Administrador - Bolsa de Empleo</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
-    <style>
-        /* ============================== */
-        /* ESTILOS ESPECÍFICOS DEL ADMIN   */
-        /* (Inspirados en dashboard_oferente)*/
-        /* ============================== */
-
-        /* 1. Corrección del Borde Blanco y Layout Base */
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%; /* Importante para el footer pegado abajo */
-            overflow-x: hidden; /* Evita scroll horizontal accidental */
-        }
-
-        body {
-            display: flex;
-            flex-direction: column; /* Layout vertical: Header -> Main -> Footer */
-            background-color: #ffffff; /* Fondo blanco para el contenido */
-            min-height: 100vh;
-        }
-
-        /* 2. Header Oscuro Estilo Imagen */
-        .header-dark {
-            background-color: #1a1a1a; /* bg-dark de referencia */
-            color: white;
-            padding: 10px 60px; /* Espaciado lateral generoso */
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #333;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-
-        .logo-icon {
-            width: 30px;
-            height: 30px;
-            background-color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #1a1a1a;
-            font-size: 0.8rem;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .nav-links a {
-            color: #b0b0b0; /* Texto atenuado para links no activos */
-            text-decoration: none;
-            font-size: 14px;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: #ffffff;
-        }
-
-        .user-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-size: 14px;
-        }
-
-        .btn-salir {
-            border: 1px solid #444;
-            padding: 4px 12px;
-            border-radius: 4px;
-            color: white;
-            text-decoration: none;
-            transition: background 0.3s;
-        }
-
-        .btn-salir:hover {
-            background-color: #333;
-        }
-
-        /* 3. Contenido Principal Centrado */
-        .admin-main {
-            flex: 1; /* Ocupa todo el espacio disponible entre header y footer */
-            padding: 60px 100px; /* Centrado visual como en oferente */
-            max-width: 1200px; /* Limita el ancho en pantallas grandes */
-            margin: 0 auto; /* Centra horizontalmente */
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .admin-main h1 {
-            font-size: 32px;
-            margin: 0 0 10px 0;
-            color: #222;
-        }
-
-        .admin-main .subtitle {
-            color: #777;
-            margin-bottom: 30px;
-            font-size: 16px;
-        }
-
-        /* 4. Botones Azules del Dashboard */
-        .card-container {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            margin-top: 20px;
-        }
-
-        .btn-admin {
-            background-color: #007bff; /* btn-blue de referencia */
-            color: white;
-            padding: 10px 20px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            border: none;
-            cursor: pointer;
-            display: inline-block;
-            transition: background 0.3s;
-        }
-
-        .btn-admin:hover {
-            background-color: #0056b3;
-        }
-
-        /* 5. Footer Oscuro Estilo Imagen */
-        .footer-dark {
-            background-color: #1a1a1a;
-            color: #888;
-            padding: 25px 100px; /* Mismo padding lateral que el main */
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            border-top: 1px solid #333;
-            margin-top: auto; /* Empuja el footer al final si el contenido es corto */
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .footer-brand {
-            font-weight: bold;
-            color: #bbb;
-            margin-bottom: 5px;
-            display: block;
-        }
-
-        .footer-right {
-            text-align: right;
-            line-height: 1.6;
-        }
-
-    </style>
 </head>
-<body>
+<body class="bg-light">
 
-<header class="header-dark">
-    <div style="display: flex; align-items: center; gap: 20px;">
-        <div class="logo-container">
-            <div class="logo-icon">BE</div>
-            BolsaEmpleo
+<div class="admin-wrapper">
+
+    <nav class="navbar">
+        <div>
+            <a href="/">Bolsa de Empleo</a>
         </div>
-        <nav class="nav-links">
+
+        <div>
             <a th:href="@{/admin/dashboard}">Dashboard</a>
-            <a th:href="@{/admin/empresas-pendientes}">Empresas pendientes</a>
-            <a th:href="@{/admin/oferentes-pendientes}">Oferentes pendientes</a>
+            <a th:href="@{/admin/empresas-pendientes}">Empresas Pendientes</a>
+            <a th:href="@{/admin/oferentes-pendientes}">Oferentes Pendientes</a>
             <a th:href="@{/admin/caracteristicas}">Características</a>
-            <a href="#">Reportes</a>
-        </nav>
-    </div>
-    <div class="user-actions">
-        <span th:text="${session.usuario.correo}">admin@tuorg.com</span>
-        <a href="/logout" class="btn-salir">Salir</a>
-    </div>
-</header>
+            <a th:href="@{/admin/caracteristicas}">Reportes</a> <!--arreglar-->
+            <a th:href="@{/logout}">Salir</a>
 
-<main class="admin-main">
-    <h1>Administrador</h1>
-    <p style="color: #666;">Aprobaciones, catálogo de características y reportes.</p>
 
-    <div class="card-container">
-        <a th:href="@{/admin/empresas-pendientes}" class="btn-admin">Empresas pendientes</a>
+        </div>
+    </nav>
 
-        <a th:href="@{/admin/caracteristicas}" class="btn-admin">Características</a>
 
-        <a th:href="@{/admin/oferentes-pendientes}" class="btn-admin">Oferentes pendientes</a>
-        <a th:href="@{/admin/reportes}" class="btn-admin">Reportes</a>
-    </div>
-</main>
+   <!-- <nav class="navbar">
+        <div>
+            <a th:href="@{/}">Bolsa de Empleo</a>
+        </div>
+        <div>
+            <a th:href="@{/admin/dashboard}">Dashboard</a>
+            <a th:href="@{/admin/empresas-pendientes}">Empresas Pendientes</a>
+            <a th:href="@{/admin/oferentes-pendientes}">Oferentes Pendientes</a>
+            <a th:href="@{/admin/caracteristicas}">Características</a>
+            <a th:href="@{/admin/caracteristicas}">Reportes</a>
+            <a th:href="@{/logout}" style="color: #ff4d4d; margin-left: 20px;">Salir</a>
+        </div>
+    </nav>-->
 
-<footer class="footer-dark">
-    <div>
-        <span class="footer-brand">Bolsa de Empleo</span>
-        Total Soft Inc.
-    </div>
-    <div class="footer-right">
-        Contacto: info@bolsaempleo.local<br>
-        Créditos: Equipo de desarrollo
-    </div>
-</footer>
+    <main class="admin-content">
+        <h1 style="text-align: left; font-size: 2.5rem; margin-bottom: 0;"> Administrador</h1>
+        <p style="text-align: left; color: #666; margin-bottom: 30px;">Gestión de aprobaciones y catálogos del sistema.</p>
+
+        <div class="admin-grid">
+            <a th:href="@{/admin/empresas-pendientes}" class="card-admin">Empresas Pendientes</a>
+            <a th:href="@{/admin/oferentes-pendientes}" class="card-admin">Oferentes Pendientes</a>
+            <a th:href="@{/admin/caracteristicas}" class="card-admin">Características</a>
+            <a th:href="@{/admin/reportes}" class="card-admin">Reportes</a>
+        </div>
+    </main>
+
+    <footer class="footer-dark">
+        <div>
+            <strong>Bolsa de Empleo</strong><br>
+            Total Soft Inc.
+        </div>
+        <div style="text-align: right; line-height: 1.4;">
+            Contacto: info@bolsaempleo.local<br>
+            © 2026
+        </div>
+    </footer>
+
+</div>
 
 </body>
 </html>

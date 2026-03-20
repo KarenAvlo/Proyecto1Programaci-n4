@@ -1,8 +1,10 @@
 package com.example.proyecto1programacion4.logic;
 
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -17,7 +19,19 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
-                                        Authentication authentication) throws IOException {
+                                        Authentication authentication) throws IOException,ServletException {
+
+        // Guardamos el email del usuario logueado en la sesión
+        HttpSession session = request.getSession();
+        String emailLogueado = authentication.getName();
+
+        // IMPORTANTE: Aquí guardamos un objeto o un mapa que tenga la propiedad 'correo'
+        // Para que coincida con tu HTML, vamos a guardar un mapa simple:
+        java.util.Map<String, String> usuarioSesion = new java.util.HashMap<>();
+        usuarioSesion.put("correo", emailLogueado);
+
+        session.setAttribute("usuario", usuarioSesion);
+
 
         Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
 
@@ -26,7 +40,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
             response.sendRedirect("/admin/dashboard");
         } else if (roles.contains("ROLE_EMPRESA")) {
             System.out.println("Empresa Logeado, cargando HTML");
-            response.sendRedirect("presentation/empresa/dashboard");
+            response.sendRedirect("/empresa/dashboard");
         } else if (roles.contains("ROLE_OFERENTE")) {
             System.out.println("Oferente Logeado, cargando HTML");
             response.sendRedirect("/oferente/dashboard");

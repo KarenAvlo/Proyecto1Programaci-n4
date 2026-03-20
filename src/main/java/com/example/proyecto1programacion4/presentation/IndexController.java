@@ -3,6 +3,7 @@ package com.example.proyecto1programacion4.presentation;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Controller
 public class IndexController {
@@ -18,7 +19,7 @@ public class IndexController {
     }
 
     // Ruta para el botón "Registro Empresa"
-   /* @GetMapping("/registro/empresa")
+   /*@GetMapping("/registro/empresa")
     public String registroEmpresa() {
         return "form_empresa"; // Crea este HTML en templates
     }

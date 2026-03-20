@@ -4,6 +4,7 @@ package com.example.proyecto1programacion4.presentation;
 
 import com.example.proyecto1programacion4.data.CaracteristicaRepository;
 import com.example.proyecto1programacion4.logic.Caracteristica;
+import com.example.proyecto1programacion4.logic.LogicService;
 import com.example.proyecto1programacion4.logic.SecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,32 +16,36 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
 
     @Autowired
-    private SecurityConfig securityService; // Tu clase de lógica/servicio
+    private LogicService logicService; // Tu clase de lógica/servicio
 
     @Autowired
     private CaracteristicaRepository caracRepo;
 
     @GetMapping("/dashboard")
-    public String dashboard() {
-        return "dashboard_admi"; // Nombre de tu archivo en templates/
+    public String dashboard(org.springframework.security.core.Authentication authentication, org.springframework.ui.Model model) {
+        if (authentication != null) {
+            // Obtenemos el email del usuario autenticado
+            model.addAttribute("correoUsuario", authentication.getName());
+        }
+        return "dashboard_admi";
     }
 
     @GetMapping("/empresas-pendientes")
     public String listarEmpresas(Model model) {
         // Usamos el método que ya tienes en SecurityConfig
-        model.addAttribute("empresas", securityService.findEmpresasPendientes());
+        model.addAttribute("empresas", logicService.findEmpresasPendientes());
         return "admin/empresas_pendientes";
     }
 
     @GetMapping("/oferentes-pendientes")
     public String listarOferentes(Model model) {
-        model.addAttribute("oferentes", securityService.findOferentesPendientes());
+        model.addAttribute("oferentes", logicService.findOferentesPendientes());
         return "admin/oferentes_pendientes";
     }
 
     @PostMapping("/autorizar/{email}")
     public String autorizar(@PathVariable String email, @RequestParam String tipo) {
-        securityService.aprobarUsuario(email); // Método existente en tu SecurityConfig
+        logicService.aprobarUsuario(email); // Método existente en tu SecurityConfig
         return "redirect:/admin/" + (tipo.equals("EMPRESA") ? "empresas" : "oferentes") + "-pendientes";
     }
 
@@ -63,7 +68,7 @@ public class AdminController {
 
     // ... dentro de AdminController.java
 
-    @GetMapping("/caracteristicas")
+   /* @GetMapping("/caracteristicas")
     public String mostrarPaginaCaracteristicas(Model model) {
         // 1. Obtenemos las categorías raíz (ej: Lenguajes, Bases de Datos)
         model.addAttribute("raices", caracRepo.findByIdPadreIsNull());
@@ -73,5 +78,12 @@ public class AdminController {
 
         // 3. Retornamos el nombre EXACTO de tu nuevo archivo HTML
         return "admi_caracteristica";
+    }*/
+
+    @ModelAttribute
+    public void addAttributes(org.springframework.security.core.Authentication authentication, org.springframework.ui.Model model) {
+        if (authentication != null) {
+            model.addAttribute("correoUsuario", authentication.getName());
+        }
     }
 }

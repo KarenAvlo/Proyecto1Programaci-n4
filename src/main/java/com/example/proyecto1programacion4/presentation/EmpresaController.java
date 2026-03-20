@@ -18,7 +18,7 @@ public class EmpresaController {
 
     @GetMapping("/dashboard")
     public String dashboard(Model model){
-    //Obtener el nombre de la empresa al iniciar secion
+    //Obtener el nombre de la empresa al iniciar sesion
         String nombreEmpresa="Pollitos.ca";
         model.addAttribute("nombreEmpresa", "Pollitos.ca");
         return "dashboard_empresa";

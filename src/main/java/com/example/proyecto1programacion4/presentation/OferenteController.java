@@ -20,20 +20,20 @@ public class OferenteController {
         //obtener nombre el oferente al iniciar seccion
         String nombreOferente ="Juann Perez";
         model.addAttribute("nombreOferente",nombreOferente);
-        return "/presentation/oferente/dashboard_oferente";
+        return "dashboard_oferente";
     }
 
     @GetMapping("/view")
     public String viewHabilidades(Model model) {
         //model.addAttribute("habilidades", service.habilidadesPorOferante());
-        return "/presentation/oferente/HabilidadesView";
+        return "HabilidadesView";
         //crear un habilidades controller que maneje este view
     }
 
     @GetMapping("/new")
     public String newPuesto(Model model) {
         model.addAttribute("offerente", new Oferente());
-        return "/presentation/oferente/CV";
+        return "CVform";
     }
 
 }

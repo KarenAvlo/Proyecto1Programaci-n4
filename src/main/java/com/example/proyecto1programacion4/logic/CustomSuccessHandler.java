@@ -29,7 +29,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
             response.sendRedirect("presentation/empresa/dashboard");
         } else if (roles.contains("ROLE_OFERENTE")) {
             System.out.println("Oferente Logeado, cargando HTML");
-            response.sendRedirect("/oferente/dashboard");
+            response.sendRedirect("presentation/oferente/show");
         } else {
             response.sendRedirect("/"); // Ruta por defecto
         }

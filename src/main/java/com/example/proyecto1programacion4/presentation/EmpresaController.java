@@ -21,7 +21,7 @@ public class EmpresaController {
     //Obtener el nombre de la empresa al iniciar secion
         String nombreEmpresa="Pollitos.ca";
         model.addAttribute("nombreEmpresa", "Pollitos.ca");
-        return "/presentation/empresa/dashboard_empresa";
+        return "dashboard_empresa";
     }
 
     @GetMapping("/show")

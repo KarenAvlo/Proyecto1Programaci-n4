@@ -40,8 +40,10 @@ public class Puesto {
     @Column(name = "activo")
     private Boolean activo;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "fecha_publicacion")
+//    @ColumnDefault("CURRENT_TIMESTAMP")
+//    @Column(name = "fecha_publicacion")
+    @Column(name = "fecha_publicacion", updatable = false)
+    @org.hibernate.annotations.CreationTimestamp
     private Instant fechaPublicacion;
 
 

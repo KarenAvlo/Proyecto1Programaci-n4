@@ -52,13 +52,20 @@ public class RegistroController {
 
             if ("OFERENTE".equals(tipo)) {
                 Oferente o = new Oferente();
+                o.setEmail(email);
+                o.setClave(clave);
+                o.setTipo("OFERENTE");
                 o.setCedula(cedula);
                 o.setNombre(nombre);
                 o.setApellido(apellido);
                 service.registrarOferente(u, o);
             } else if ("EMPRESA".equals(tipo)) {
+                System.out.println("Email recibido: " + u.getEmail());
                 Empresa e = new Empresa();
+                e.setEmail(email);
+                e.setClave(clave);
                 e.setNombre(nombre);
+                e.setTipo("EMPRESA");
                 service.registrarEmpresa(e);
             }
 

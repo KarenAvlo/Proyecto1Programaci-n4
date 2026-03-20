@@ -74,7 +74,7 @@ public class LogicService {
         //o.setEmail(o.getEmail());
         o.setNombre("Juan");
         o.setApellido("Pérez");
-        o.setCedula("1-1111-1111"));
+        o.setCedula("1-1111-1111");
         o.setTelefono("8888-8888");
         // o.setEstado(true); // Si tu entidad Oferente tiene un campo estado, descomenta esto
         oferenteRepository.save(o);
@@ -128,6 +128,7 @@ public class LogicService {
         if (usuarioRepository.existsById(e.getEmail())) {
             throw new Exception("El correo ya existe.");
         }
+        e.setEmail(e.getEmail());
         e.setTipo("EMPRESA");
         e.setEstado(false);
         e.setClave(passwordEncoder.encode(e.getClave()));

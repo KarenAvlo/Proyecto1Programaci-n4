@@ -12,4 +12,6 @@ public interface CaracteristicaRepository extends JpaRepository<Caracteristica, 
 
     // Spring leerá: "Buscar por el atributo idPadre"
     List<Caracteristica> findByIdPadre(Caracteristica padre);
+
+    Caracteristica findByNombre(String caracteristica);
 }

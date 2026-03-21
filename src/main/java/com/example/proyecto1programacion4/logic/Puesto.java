@@ -9,6 +9,8 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -50,5 +52,20 @@ public class Puesto {
     @org.hibernate.annotations.CreationTimestamp
     private Instant fechaPublicacion;
 
+    // Importante: No crea tablas nuevas, solo mapea la relación que ya existe en SQL
+    @OneToMany(mappedBy = "idPuesto", fetch = FetchType.LAZY)
+    private List<PuestoCaracteristica> puestoCaracteristicas = new ArrayList<>();
 
+
+    public String getDetalleFormateado() {
+        if (puestoCaracteristicas == null || puestoCaracteristicas.isEmpty())
+            return "Sin requisitos específicos";
+
+        StringBuilder sb = new StringBuilder();
+        for (PuestoCaracteristica pc : puestoCaracteristicas) {
+            sb.append("• ").append(pc.getIdCaracteristica().getNombre())
+                    .append(" (nivel ").append(pc.getNivelDeseado()).append(")\n");
+        }
+        return sb.toString();
+    }
 }

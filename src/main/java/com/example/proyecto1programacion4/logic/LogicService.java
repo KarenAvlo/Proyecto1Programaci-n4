@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +42,9 @@ public class LogicService {
 
     @Autowired
     private OferenteCaracteristicaRepository oferenteCaracteristicaRepository;
+
+    @Autowired
+    private PuestoCaracteristicaRepository puestoCaracteristicaRepository;
 
     // --------------- INICIALIZACIÓN ----------------
     @PostConstruct
@@ -135,6 +139,10 @@ public class LogicService {
         oferenteRepository.save(o);
     }
 
+    public Oferente buscarOferentePorCedula(String cedula) {
+        return oferenteRepository.findByCedula(cedula).orElse(null);
+    }
+
     // --------------- LÓGICA DE EMPRESAS ----------------
     public void registrarEmpresa(Empresa e) throws Exception {
         if (usuarioRepository.existsById(e.getEmail())) {
@@ -183,12 +191,21 @@ public class LogicService {
     }
 
     // Guarda cada característica vinculada al puesto
-    public void guardarRequisito(Puesto puesto, String nombre, Integer nivel) {
-        Requisito req = new Requisito();
-        req.setPuesto(puesto);
-        req.setNombre(nombre);
-        req.setNivel(nivel);
-        requisitoRepository.save(req);
+    public void guardarRequisito(Puesto puesto, String nombreCaracteristica, Integer nivel) {
+        // 1. Buscamos la entidad Caracteristica que coincida con el nombre seleccionado en el HTML
+        // Debes tener un método en tu CaracteristicaRepository que busque por nombre
+        Caracteristica carac = caracteristicaRepository.findByNombre(nombreCaracteristica);
+
+        if (carac != null) {
+            // 2. Usamos la clase que ya tienes definida: PuestoCaracteristica
+            PuestoCaracteristica pc = new PuestoCaracteristica();
+            pc.setIdPuesto(puesto); // Seteamos el puesto recién guardado
+            pc.setIdCaracteristica(carac); // Seteamos la habilidad técnica
+            pc.setNivelDeseado(nivel); // Seteamos el nivel (1-5)
+
+            // 3. Guardamos en la tabla intermedia
+            puestoCaracteristicaRepository.save(pc);
+        }
     }
 
     // Este método lo usa tu EmpresaController.showPuestos
@@ -210,7 +227,7 @@ public class LogicService {
     }
 
     public List<OferenteCaracteristica> listarCaracteristicasOferente(String cedula) {
-        return oferenteCaracteristicaRepository.findByCedulaOferente(cedula);
+        return oferenteCaracteristicaRepository.findByCedulaOferenteCedula(cedula);
     }
 
     public List<Caracteristica> listaCaracteristicasPadre(){
@@ -225,6 +242,130 @@ public class LogicService {
 
     public void guardarOferente(Oferente oferente) {
         oferenteRepository.save(oferente);
+    }
+
+    //=======================MATCH CANDIDATOS===========================
+
+    public List<CandidatoMatch> buscarCandidatosParaPuesto(Integer idPuesto) {
+        // 1. Obtener requisitos del puesto
+        List<PuestoCaracteristica> requisitos = puestoCaracteristicaRepository.findAll()
+                .stream().filter(pc -> pc.getIdPuesto().getId().equals(idPuesto))
+                .collect(Collectors.toList());
+
+        if (requisitos.isEmpty()) return new ArrayList<>();
+
+        // 2. Obtener todos los oferentes activos
+        List<Oferente> todosLosOferentes = oferenteRepository.findAll();
+        List<CandidatoMatch> resultados = new ArrayList<>();
+
+        for (Oferente oferente : todosLosOferentes) {
+            // Habilidades del candidato actual
+            List<OferenteCaracteristica> habilidadesCandidato =
+                    oferenteCaracteristicaRepository.findByCedulaOferenteCedula(oferente.getCedula());
+
+            int coincidencias = 0;
+            for (PuestoCaracteristica req : requisitos) {
+                for (OferenteCaracteristica hab : habilidadesCandidato) {
+                    // Compara si es la misma habilidad y si el nivel del candidato es >= al deseado
+                    if (hab.getIdCaracteristica().getId().equals(req.getIdCaracteristica().getId())
+                            && hab.getNivel() >= req.getNivelDeseado()) {
+                        coincidencias++;
+                        break;
+                    }
+                }
+            }
+
+            // Calcular porcentaje (Regla de 3)
+            double porcentaje = (double) coincidencias / requisitos.size() * 100;
+
+            if (porcentaje > 0) { // Solo mostrar si tiene al menos algo de match
+                CandidatoMatch match = new CandidatoMatch();
+                match.setOferente(oferente);
+                match.setPorcentaje(Math.round(porcentaje * 100.0) / 100.0); // Redondear 2 decimales
+                match.setCoincidencias(coincidencias);
+                resultados.add(match);
+            }
+        }
+
+        // Ordenar de mayor a menor porcentaje
+        resultados.sort((a, b) -> Double.compare(b.getPorcentaje(), a.getPorcentaje()));
+        return resultados;
+    }
+
+    public void guardarPuestoCaracteristica(Puesto puesto, Integer caracteristicaId, Integer nivel) {
+        if (caracteristicaId == null) return; // Evita errores si la fila estaba vacía
+
+        Caracteristica car = caracteristicaRepository.findById(caracteristicaId).orElse(null);
+        if (car != null) {
+            PuestoCaracteristica pc = new PuestoCaracteristica();
+            pc.setIdPuesto(puesto);
+            pc.setIdCaracteristica(car);
+            pc.setNivelDeseado(nivel);
+            puestoCaracteristicaRepository.save(pc);
+        }
+    }
+
+    public void desactivarPuesto(Integer id) {
+        Puesto puesto = puestoRepository.findById(id).orElse(null);
+        if (puesto != null) {
+            puesto.setActivo(false);
+            puestoRepository.save(puesto);
+        }
+    }
+
+
+    /*=======VISTA PRINCIPAL=============*/
+    // Este lo usas para la página principal (index) donde entra cualquiera
+    public List<Puesto> listarPuestosPublicos() {
+        return puestoRepository.findAll().stream()
+                .filter(p -> p.getActivo() != null && p.getActivo()
+                        && "PUBLICA".equalsIgnoreCase(p.getTipoPublicacion()))
+                .sorted((p1, p2) -> p2.getFechaPublicacion().compareTo(p1.getFechaPublicacion()))
+                .limit(5)
+                .collect(Collectors.toList());
+    }
+
+    // Este lo usas cuando un Oferente ya inició sesión
+    public List<Puesto> listarPuestosParaOferenteLogueado() {
+        return puestoRepository.findAll().stream()
+                .filter(p -> p.getActivo() == true) // Ve públicas y privadas
+                .collect(Collectors.toList());
+    }
+
+    public List<Puesto> listar5UltimosPuestosPublicos() {
+        return puestoRepository.findAll().stream()
+                .filter(p -> p.getActivo() && "PUBLICA".equalsIgnoreCase(p.getTipoPublicacion()))
+                // Ordenamos por fechaRegistro de forma descendente (más nuevo primero)
+                .sorted((p1, p2) -> p2.getFechaPublicacion().compareTo(p1.getFechaPublicacion()))
+                .limit(5)
+                .collect(Collectors.toList());
+    }
+
+    //=========Buscar puestos===============//
+    public List<Caracteristica> listarCategoriasRaiz() {
+        return caracteristicaRepository.findByIdPadreIsNull();
+    }
+
+    public List<Caracteristica> listarSubcategorias(Caracteristica padre) {
+        return caracteristicaRepository.findByIdPadre(padre); //
+    }
+
+    public List<Puesto> buscarPuestosFiltrados(List<Integer> ids, String moneda) {
+        return puestoRepository.findAll().stream()
+                .filter(p -> p.getActivo() != null && p.getActivo()
+                        && "PUBLICA".equalsIgnoreCase(p.getTipoPublicacion()))
+                // Filtro por Moneda (si se seleccionó una)
+                .filter(p -> {
+                    if (moneda == null || moneda.isEmpty()) return true;
+                    return moneda.equalsIgnoreCase(p.getMoneda());
+                })
+                // Filtro por Características (si se seleccionaron)
+                .filter(p -> {
+                    if (ids == null || ids.isEmpty()) return true;
+                    return p.getPuestoCaracteristicas().stream()
+                            .anyMatch(pc -> ids.contains(pc.getIdCaracteristica().getId()));
+                })
+                .collect(Collectors.toList());
     }
 
 }

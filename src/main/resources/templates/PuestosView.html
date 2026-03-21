@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Empresa - Mis puestos</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="admin-body">
+
+<div class="admin-wrapper">
+  <nav class="navbar">
+    <div class="nav-brand">
+      <a th:href="@{/}">Bolsa de Empleo</a>
+    </div>
+    <div class="nav-links">
+      <a th:href="@{/empresa/dashboard}">Dashboard</a>
+      <a th:href="@{/empresa/show}" class="active-link">Mis puestos</a>
+      <a th:href="@{/empresa/new}">Publicar puesto</a>
+
+      <span style="color: white; text-decoration: none;" th:text="${correoUsuario}">
+            usuario@correo.com
+        </span>
+
+      <a th:href="@{/logout}" class="btn-logout">Salir</a>
+    </div>
+  </nav>
+
+  <main class="admin-content">
+    <div class="title-section">
+      <h1>Mis puestos</h1>
+      <a th:href="@{/empresa/new}" class="btn-custom-blue">Publicar puesto</a>
+    </div>
+
+    <div class="table-container">
+      <table class="table-custom">
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Descripción</th>
+          <th>Salario</th>
+          <th>Activo</th>
+          <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="puesto : ${puestos}">
+          <td th:text="${puesto.id}">1</td>
+          <td th:text="${puesto.descripcion}">Desarrollador Java</td>
+          <td th:text="${(puesto.moneda == 'USD' ? '$ ' : '₡ ') + puesto.salarioOfrecido}">
+            ₡ 0.00
+          </td>
+          <td>
+            <span th:if="${puesto.activo}" class="badge-activo">Si</span>
+            <span th:unless="${puesto.activo}" class="badge-inactivo">No</span>
+          </td>
+          <td class="actions-cell">
+            <a th:href="@{/empresa/puesto/desactivar/{id}(id=${puesto.id})}" class="btn-desactivar">Desactivar</a>
+            <a th:href="@{/empresa/buscar-candidatos/{id}(id=${puesto.id})}" class="btn-buscar-candidatos">Buscar candidatos</a>
+          </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(puestos)}">
+          <td colspan="5" class="empty-row">No tienes puestos publicados actualmente.</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer class="footer-dark">
+    <div class="footer-col">
+      <strong>Bolsa de Empleo</strong><br>
+      Total Soft Inc.
+    </div>
+    <div class="footer-col text-right">
+      Contacto: info@bolsaempleo.local<br>
+      Créditos: Equipo de desarrollo
+    </div>
+  </footer>
+</div>
+
+</body>
+</html>

@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -7,7 +9,7 @@
 </head>
 <body class="bg-light">
 
-<nav class="navbar">
+<div class="page-wrapper-custom"> <nav class="navbar">
     <div>
         <a th:href="@{/}">Bolsa de Empleo</a>
     </div>
@@ -19,50 +21,69 @@
     </div>
 </nav>
 
-<div class="form-container form-large">
-    <h2>Registro de Empresa</h2>
+    <div class="flex-grow-container"> <div class="form-container form-large form-compact">
+        <h2>Registro de Empresa</h2>
 
-    <div th:if="${error}" style="color:red; margin-bottom: 15px; text-align: center;">
-        <p th:text="${error}"></p>
+        <div th:if="${error}" style="color:red; margin-bottom: 10px; text-align: center; font-size: 14px;">
+            <p th:text="${error}"></p>
+        </div>
+
+        <form th:action="@{/registro/guardar}" method="post">
+            <input type="hidden" name="tipo" value="EMPRESA">
+
+            <div class="form-group">
+                <label>Nombre de la Empresa:</label>
+                <input type="text" name="nombre" placeholder="Nombre comercial" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Correo Corporativo:</label>
+                    <input type="email" name="email" placeholder="rrhh@empresa.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña:</label>
+                    <input type="password" name="clave" placeholder="Mínimo 6 caracteres" required minlength="6">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Teléfono:</label>
+                    <input type="text" name="telefono" placeholder="8888-8888" required>
+                </div>
+                <div class="form-group">
+                    <label>Localización:</label>
+                    <input type="text" name="localizacion" placeholder="Provincia, Ciudad" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Descripción de la Empresa:</label>
+                <textarea name="descripcion" placeholder="Breve reseña de la empresa..."
+                          style="width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 5px; height: 80px; font-family: Arial, sans-serif;"></textarea>
+            </div>
+            <button type="submit" class="btn-primary" style="margin-top: 5px;">
+                Registrarse
+            </button>
+
+            <div style="margin-top: 10px; text-align: center;">
+                <a th:href="@{/}" style="color: #666; text-decoration: none; font-size: 13px;">← Volver al inicio</a>
+            </div>
+        </form>
+    </div>
     </div>
 
-    <form th:action="@{/registro/guardar}" method="post">
-        <input type="hidden" name="tipo" value="EMPRESA">
-
-        <div class="form-group">
-            <label>Nombre de la Empresa:</label>
-            <input type="text" name="nombre" placeholder="Nombre comercial" required>
+    <footer class="footer-dark">
+        <div>
+            <strong>Bolsa de Empleo</strong><br>
+            Total Soft Inc.
         </div>
-
-        <div class="form-group">
-            <label>Correo Corporativo:</label>
-            <input type="email" name="email" placeholder="rrhh@empresa.com" required>
-            <small style="color: #666;">Este será su usuario para iniciar sesión.</small>
+        <div style="text-align: right; line-height: 1.4;">
+            Contacto: info@bolsaempleo.local<br>
+            © 2026
         </div>
+    </footer>
 
-        <div class="form-group">
-            <label>Contraseña:</label>
-            <input type="password" name="clave" placeholder="Mínimo 6 caracteres" required minlength="6">
-        </div>
-
-
-
-        <!-- BOTÓN -->
-        <button type="submit" class="btn btn-primary">
-            Registrarse
-        </button>
-
-       <!-- <button type="submit" class="btn-primary" style="margin-top: 10px;">Solicitar Registro</button>-->
-
-        <div style="margin-top: 20px; text-align: center;">
-            <a th:href="@{/}" style="color: #666; text-decoration: none; font-size: 14px;">← Volver al inicio</a>
-        </div>
-    </form>
-</div>
-
-<footer style="background-color: #212529; color: white; text-align: center; padding: 20px; margin-top: 50px;">
-    <p>&copy; 2024 Bolsa de Empleo - Ingeniería Informática</p>
-</footer>
-
-</body>
+</div> </body>
 </html>

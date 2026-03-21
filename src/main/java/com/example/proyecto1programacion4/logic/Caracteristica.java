@@ -24,6 +24,4 @@ public class Caracteristica {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_padre")
     private Caracteristica idPadre;
-
-
 }

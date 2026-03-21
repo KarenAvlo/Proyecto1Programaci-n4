@@ -7,6 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface OferenteRepository extends JpaRepository<Oferente,String> {
@@ -14,4 +15,6 @@ public interface OferenteRepository extends JpaRepository<Oferente,String> {
 
     @Query("SELECT o FROM Oferente o WHERE o.estado = false")
     List<Oferente> findPendientes();
+
+    Optional<Oferente> findByEmail(String email);
 }

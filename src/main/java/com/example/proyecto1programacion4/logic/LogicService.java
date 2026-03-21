@@ -39,6 +39,9 @@ public class LogicService {
     @Autowired
     private CaracteristicaRepository caracteristicaRepository;
 
+    @Autowired
+    private OferenteCaracteristicaRepository oferenteCaracteristicaRepository;
+
     // --------------- INICIALIZACIÓN ----------------
     @PostConstruct
     public void init() {
@@ -198,6 +201,30 @@ public class LogicService {
     public List<Caracteristica> listarCaracteristicasAdmin() {
 
         return caracteristicaRepository.findAll();
+    }
+
+    //================HABILIDADESPUESTOS=============================//
+
+    public Oferente buscarOferentePorEmail(String email) {
+        return oferenteRepository.findByEmail(email).orElse(null);
+    }
+
+    public List<OferenteCaracteristica> listarCaracteristicasOferente(String cedula) {
+        return oferenteCaracteristicaRepository.findByCedulaOferente(cedula);
+    }
+
+    public List<Caracteristica> listaCaracteristicasPadre(){
+        return caracteristicaRepository.findByIdPadreIsNull();
+    }
+
+    public void guardarOferenteCaracteristica(OferenteCaracteristica oc) {
+        oferenteCaracteristicaRepository.save(oc);
+    }
+
+    //================CV=============================//
+
+    public void guardarOferente(Oferente oferente) {
+        oferenteRepository.save(oferente);
     }
 
 }

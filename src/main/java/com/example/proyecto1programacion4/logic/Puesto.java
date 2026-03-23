@@ -50,5 +50,4 @@ public class Puesto {
     @org.hibernate.annotations.CreationTimestamp
     private Instant fechaPublicacion;
 
-
 }

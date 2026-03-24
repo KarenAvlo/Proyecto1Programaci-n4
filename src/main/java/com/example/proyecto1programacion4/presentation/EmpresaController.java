@@ -1,10 +1,11 @@
 package com.example.proyecto1programacion4.presentation;
 
-import com.example.proyecto1programacion4.logic.Empresa;
-import com.example.proyecto1programacion4.logic.LogicService;
-import com.example.proyecto1programacion4.logic.Puesto;
-import com.example.proyecto1programacion4.logic.SecurityConfig;
+import com.example.proyecto1programacion4.logic.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
@@ -66,6 +67,22 @@ public class EmpresaController {
         }
         return "redirect:/empresa/show";
     }
+
+    @GetMapping("/PDFOferente")
+    public ResponseEntity<Resource> getPDFOferente(@PathVariable String cedula){
+        try {
+            Resource pdf = logicService.obtenerArchivoCV(cedula);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + pdf.getFilename() + "\"")
+                    .body(pdf);
+
+        } catch (Exception e) {
+            System.err.println("Error al intentar visualizar el CV: " + e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
 
 /*

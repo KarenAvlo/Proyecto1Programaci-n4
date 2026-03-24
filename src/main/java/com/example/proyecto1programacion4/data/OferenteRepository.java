@@ -17,4 +17,6 @@ public interface OferenteRepository extends JpaRepository<Oferente,String> {
     List<Oferente> findPendientes();
 
     Optional<Oferente> findByEmail(String email);
+
+    Optional<Oferente> findByCedula(String cedula);
 }

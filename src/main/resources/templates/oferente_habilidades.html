@@ -1,71 +1,147 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Oferente - Habilidades</title>
     <style>
-        /* Estilos Generales */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; flex-direction: column; min-height: 100vh; background-color: #f4f7f6; }
+        /* CONFIGURACIÓN GLOBAL - Tipografía idéntica al Dashboard */
+        * { box-sizing: border-box; }
 
-        /* HEADER (MENÚ) */
-        header { background-color: #212529; color: white; padding: 10px 40px; display: flex; justify-content: space-between; align-items: center; }
-        .nav-left { display: flex; align-items: center; gap: 20px; }
-        .logo { font-weight: bold; font-size: 1.2em; display: flex; align-items: center; gap: 8px; }
-        .nav-links { display: flex; gap: 15px; }
-        .nav-links a { color: #adb5bd; text-decoration: none; font-size: 0.9em; }
-        .nav-links a:hover { color: white; }
-        .user-info { display: flex; align-items: center; gap: 15px; font-size: 0.9em; }
-        .btn-salir { background: transparent; border: 1px solid #6c757d; color: white; padding: 4px 12px; cursor: pointer; border-radius: 4px; text-decoration: none; }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-        /* CUERPO PRINCIPAL */
-        main { flex: 1; padding: 20px 40px; }
-        h2 { margin-bottom: 20px; font-weight: 500; }
+        /* HEADER / NAVBAR - Color #1a1a1a exacto */
+        header {
+            background-color: #1a1a1a;
+            color: white;
+            padding: 0 60px;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+            width: 100%;
+        }
+
+        .nav-brand a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem; /* Ajustado para que no sea muy grande */
+        }
+
+        .nav-items-right {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .nav-items-right a {
+            color: #b0b0b0; /* Gris del dashboard original */
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .nav-items-right a:hover {
+            color: #ffffff;
+        }
+
+        /* Enlace activo */
+        .nav-active {
+            color: white !important;
+            font-weight: 500;
+        }
+
+        /* Botón Salir estilo Dashboard */
+        .btn-logout {
+            color: white !important;
+            border: 1px solid #444;
+            padding: 4px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-left: 10px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: white;
+        }
+
+        .user-email {
+            color: white;
+            font-size: 14px;
+            margin-left: 5px;
+            border-left: 1px solid #444;
+            padding-left: 15px;
+        }
+
+        /* CONTENIDO PRINCIPAL */
+        main { flex: 1; padding: 40px 60px; }
+        h2 { margin-bottom: 25px; font-weight: 500; color: #212529; font-size: 28px; }
+
         .main-container { display: flex; gap: 20px; align-items: flex-start; }
         .panel { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
-        /* PANEL IZQUIERDO: TABLA */
         .panel-habilidades { flex: 1; }
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 12px; border-bottom: 1px solid #dee2e6; font-size: 0.9em; }
-        td { padding: 12px; border-bottom: 1px solid #eee; font-size: 0.9em; }
-
-        /* PANEL CENTRAL: NAVEGACIÓN */
         .panel-navegacion { flex: 1.2; background-color: #f8fff9; border: 1px solid #e1eee2; }
-        .breadcrumb-container { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-        .breadcrumb-item { background: white; border: 1px solid #ccc; padding: 4px 10px; border-radius: 5px; text-decoration: none; color: #555; font-size: 0.85em; }
-        .list-item { display: flex; justify-content: space-between; align-items: center; background: white; padding: 12px; margin-top: 10px; border-radius: 6px; border: 1px solid #eee; }
-        .btn-entrar { color: #007bff; border: 1px solid #007bff; padding: 4px 15px; text-decoration: none; border-radius: 4px; font-size: 0.85em; }
-
-        /* PANEL DERECHO: FORMULARIO */
         .panel-agregar { flex: 0.8; border: 1px solid #dee2e6; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 8px; font-size: 0.85em; color: #666; }
-        select, input { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; }
-        .btn-agregar { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
 
-        /* FOOTER */
-        footer { background-color: #212529; color: white; padding: 20px 40px; display: flex; justify-content: space-between; font-size: 0.85em; }
-        .footer-left p, .footer-right p { margin: 5px 0; color: #adb5bd; }
-        .text-blue { color: #007bff; }
+        /* Tablas y Elementos Internos */
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px; border-bottom: 2px solid #dee2e6; font-size: 14px; color: #495057; }
+        td { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; color: #333; }
+
+        .breadcrumb-item { text-decoration: none; color: #007bff; font-size: 13px; }
+        .btn-entrar { color: #007bff; border: 1px solid #007bff; padding: 4px 15px; text-decoration: none; border-radius: 4px; font-size: 13px; transition: 0.2s; }
+        .btn-entrar:hover { background: #007bff; color: white; }
+
+        .btn-agregar { width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        .btn-agregar:hover { background: #0056b3; }
+
+        /* FOOTER - Color #1a1a1a exacto */
+        footer {
+            background-color: #1a1a1a;
+            color: #888;
+            padding: 30px 60px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-top: auto;
+        }
+        footer strong { color: #bbb; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="nav-left">
-        <div class="logo">
-            <img th:src="@{/img/logo.png}" alt="" width="30"> BolsaEmpleo
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a th:href="@{/}">Bolsa de Empleo</a>
         </div>
-        <nav class="nav-links">
-            <a th:href="@{/oferente/dashboard}">Dashboard</a>
-            <a th:href="@{/oferente/habilidades}" style="color: white; border-bottom: 1px solid white;">Mis habilidades</a>
-            <a th:href="@{/oferente/cv}">Mi CV</a>
-        </nav>
-    </div>
-    <div class="user-info">
-        <span th:text="${session.usuarioLogueado.email}">usuario@correo.com</span>
-        <a th:href="@{/logout}" class="btn-salir">Salir</a>
-    </div>
+
+        <div class="nav-items-right">
+            <a th:href="@{/presentation/oferente/show}">Dashboard</a>
+            <a th:href="@{/presentation/oferente/habilidades}" class="nav-active">Mis Habilidades</a>
+            <a th:href="@{/presentation/oferente/CV}">Mi CV</a>
+
+            <span class="user-email" th:text="${usuarioLogueado?.email}">usuario@correo.com</span>
+
+            <a th:href="@{/logout}" class="btn-logout">Salir</a>
+        </div>
+    </nav>
 </header>
 
 <main>
@@ -82,58 +158,56 @@
                 </thead>
                 <tbody>
                 <tr th:each="h : ${misHabilidades}">
-                    <td th:text="${h.caracteristica.nombre}">...</td>
-                    <td th:text="${h.nivel}" style="text-align: right; font-weight: bold;">...</td>
+                    <td th:text="${h.idCaracteristica.nombre}">Habilidad</td>
+                    <td th:text="${h.nivel}" style="text-align: right; font-weight: bold; color: #007bff;">4</td>
                 </tr>
                 </tbody>
             </table>
         </div>
 
         <div class="panel panel-navegacion">
-            <p style="margin-top: 0; font-weight: bold; font-size: 0.9em;">Ruta:</p>
-            <div class="breadcrumb-container">
-                <a th:href="@{/oferente/habilidades}" class="breadcrumb-item">Raíces</a>
+            <p style="margin-top: 0; font-weight: bold; font-size: 13px; color: #666;">Ruta:</p>
+            <div style="display: flex; gap: 5px; margin-bottom: 15px;">
+                <a th:href="@{/presentation/oferente/habilidades}" class="breadcrumb-item">Raíces</a>
                 <th:block th:each="r : ${ruta}">
-                    <span>/</span>
-                    <a th:href="@{/oferente/habilidades(actualId=${r.id})}" class="breadcrumb-item" th:text="${r.nombre}">Cat</a>
+                    <span style="color: #ccc;"> / </span>
+                    <a th:href="@{/presentation/oferente/habilidades(actualId=${r.id})}" class="breadcrumb-item" th:text="${r.nombre}">Cat</a>
                 </th:block>
             </div>
 
-            <p style="font-size: 0.9em;">Subcategorías de: <span th:text="${actual != null ? actual.nombre : 'Raíces'}" class="text-blue" style="font-weight: bold;"></span></p>
-
-            <div th:each="sub : ${subcategorias}" class="list-item">
-                <span th:text="${sub.nombre}" style="font-weight: bold;">Nombre</span>
-                <a th:href="@{/oferente/habilidades(actualId=${sub.id})}" class="btn-entrar">Entrar</a>
+            <div th:each="sub : ${subcategorias}" style="display: flex; justify-content: space-between; align-items: center; background: white; padding: 10px; margin-top: 8px; border-radius: 4px; border: 1px solid #eee;">
+                <span th:text="${sub.nombre}" style="font-size: 14px; font-weight: 500;">Subcategoría</span>
+                <a th:href="@{/presentation/oferente/habilidades(actualId=${sub.id})}" class="btn-entrar">Entrar</a>
             </div>
         </div>
 
         <div class="panel panel-agregar">
-            <form th:action="@{/oferente/agregar-habilidad}" method="post">
-                <h4 style="margin-top: 0;">Agregar Habilidad</h4>
-                <div class="form-group">
-                    <label>Característica</label>
-                    <select name="idCaracteristica">
+            <form th:action="@{/presentation/oferente/saveCaracteristica}" method="post">
+                <h4 style="margin: 0 0 15px 0;">Agregar Habilidad</h4>
+                <div style="margin-bottom: 15px;">
+                    <label style="font-size: 13px; color: #666;">Característica</label>
+                    <select name="idCaracteristica" style="width: 100%; padding: 8px; margin-top: 5px;" required>
                         <option th:each="opt : ${subcategorias}" th:value="${opt.id}" th:text="${opt.nombre}"></option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label>Nivel (1-5)</label>
-                    <input type="number" name="nivel" min="1" max="5" value="4">
+                <div style="margin-bottom: 15px;">
+                    <label style="font-size: 13px; color: #666;">Nivel (1-5)</label>
+                    <input type="number" name="nivel" min="1" max="5" value="4" style="width: 100%; padding: 8px; margin-top: 5px;" required>
                 </div>
-                <button type="submit" class="btn-agregar">Agregar</button>
+                <button type="submit" class="btn-agregar">Guardar</button>
             </form>
         </div>
     </div>
 </main>
 
 <footer>
-    <div class="footer-left">
-        <p><strong>Bolsa de Empleo</strong></p>
-        <p>Total Soft Inc.</p>
+    <div>
+        <strong>Bolsa de Empleo</strong><br>
+        Total Soft Inc.
     </div>
-    <div class="footer-right" style="text-align: right;">
-        <p>Contacto: info@bolsaempleo.local</p>
-        <p>Créditos: Equipo de desarrollo</p>
+    <div style="text-align: right; line-height: 1.6;">
+        Contacto: info@bolsaempleo.local<br>
+        © 2026
     </div>
 </footer>
 

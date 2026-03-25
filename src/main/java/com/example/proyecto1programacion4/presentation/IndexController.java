@@ -43,7 +43,7 @@ public class IndexController {
             @RequestParam(value = "moneda", required = false) String moneda,
             Model model) {
 
-        // Llamamos al nuevo método con ambos parámetros
+
         model.addAttribute("resultados", logicService.buscarPuestosFiltrados(ids, moneda));
 
         model.addAttribute("categorias", logicService.listarCategoriasRaiz());

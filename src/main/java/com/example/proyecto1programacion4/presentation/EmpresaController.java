@@ -94,15 +94,6 @@ public class EmpresaController {
         }
     }
 
-   
-
-/*
-    // Listar solo los puestos de una empresa específica
-    public List<Puesto> listarPuestosPorEmpresa(Empresa empresa) {
-        return puestoRepository.findByEmailEmpresa(empresa);
-
-    }
-
     @GetMapping("/buscar-candidatos/{id}")
     public String buscarCandidatos(@PathVariable("id") Integer id, Model model, Authentication auth) {
         model.addAttribute("correoUsuario", auth.getName());
@@ -121,24 +112,37 @@ public class EmpresaController {
                                       @RequestParam(value = "puestoId", required = false) Integer puestoId,
                                       Model model,
                                       Authentication auth) {
-        // 1. Enviamos el correo de la empresa para el navbar
+        //  Enviamos el correo de la empresa para el navbar
         model.addAttribute("correoUsuario", auth.getName());
 
-        // 2. Buscamos al oferente usando el método que creamos (por cédula)
+        //  Buscamos al oferente usando el método que creamos (por cédula)
         Oferente oferente = logicService.buscarOferentePorCedula(cedula);
 
         if (oferente != null) {
-            // 3. Cargamos sus habilidades usando su cédula (que es como lo tienes en el Service)
+            //  Cargamos sus habilidades usando su cédula
             List<OferenteCaracteristica> habilidades = logicService.listarCaracteristicasOferente(cedula);
 
             model.addAttribute("oferente", oferente);
             model.addAttribute("habilidades", habilidades);
         }
 
-        // 4. Pasamos el puestoId para que el botón "Volver" sepa a dónde regresar
+        //  Pasamos el puestoId para que el botón "Volver" sepa a dónde regresar
         model.addAttribute("puestoId", puestoId);
 
         return "DetalleOferenteView";
     }
-*/
+    @GetMapping("/ver-pdf/{cedula}")
+    public ResponseEntity<Resource> verPdfCandidato(@PathVariable String cedula) {
+        try {
+
+            Resource pdf = logicService.obtenerArchivoCV(cedula);
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + pdf.getFilename() + "\"")
+                    .body(pdf);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

@@ -46,14 +46,10 @@ public class Puesto {
     @Column(name = "activo")
     private Boolean activo;
 
-    //    @ColumnDefault("CURRENT_TIMESTAMP")
-//    @Column(name = "fecha_publicacion")
     @Column(name = "fecha_publicacion", updatable = false)
     @org.hibernate.annotations.CreationTimestamp
     private Instant fechaPublicacion;
 
-
-    // Importante: No crea tablas nuevas, solo mapea la relación que ya existe en SQL
     @OneToMany(mappedBy = "idPuesto", fetch = FetchType.LAZY)
     private List<PuestoCaracteristica> puestoCaracteristicas = new ArrayList<>();
 

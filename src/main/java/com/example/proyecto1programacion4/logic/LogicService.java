@@ -24,6 +24,7 @@ import java.awt.Color;
 
 // Para el manejo de excepciones que pide el método
 import java.net.MalformedURLException;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -206,29 +207,29 @@ public class LogicService {
 
     // Guarda cada característica vinculada al puesto
     public void guardarRequisito(Puesto puesto, String nombreCaracteristica, Integer nivel) {
-        // 1. Buscamos la entidad Caracteristica que coincida con el nombre seleccionado en el HTML
-        // Debes tener un método en tu CaracteristicaRepository que busque por nombre
+        //  Buscamos la entidad Caracteristica que coincida con el nombre seleccionado en el HTML
+
         Caracteristica carac = caracteristicaRepository.findByNombre(nombreCaracteristica);
 
         if (carac != null) {
-            // 2. Usamos la clase que ya tienes definida: PuestoCaracteristica
+
             PuestoCaracteristica pc = new PuestoCaracteristica();
             pc.setIdPuesto(puesto); // Seteamos el puesto recién guardado
             pc.setIdCaracteristica(carac); // Seteamos la habilidad técnica
             pc.setNivelDeseado(nivel); // Seteamos el nivel (1-5)
 
-            // 3. Guardamos en la tabla intermedia
+            // Guardamos en la tabla intermedia
             puestoCaracteristicaRepository.save(pc);
         }
     }
 
-    // Este método lo usa tu EmpresaController.showPuestos
+
     public List<Puesto> findPuestosPorEmpresa(String email) {
         Empresa e = empresaRepository.findById(email).orElse(null);
         return puestoRepository.findByEmailEmpresa(e);
     }
 
-    // En LogicService.java
+
     public List<Caracteristica> listarCaracteristicasAdmin() {
 
         return caracteristicaRepository.findAll();
@@ -241,19 +242,26 @@ public class LogicService {
     }
 
     public List<OferenteCaracteristica> listarCaracteristicasOferente(String cedula) {
-<<<<<<< HEAD
         return oferenteCaracteristicaRepository.findByCedulaOferenteCedula(cedula);
-=======
-        return oferenteCaracteristicaRepository.findByCedulaOferente(cedula);
->>>>>>> 4cd35a324cbcb895f2f312bf7ba8f7cc7408793f
     }
 
     public List<Caracteristica> listaCaracteristicasPadre(){
         return caracteristicaRepository.findByIdPadreIsNull();
+
     }
 
-    public void guardarOferenteCaracteristica(OferenteCaracteristica oc) {
-        oferenteCaracteristicaRepository.save(oc);
+
+    public Caracteristica buscarCaracteristicaPorId(Integer id) {
+        return caracteristicaRepository.findById(id).orElse(null);
+    }
+
+    public void guardarOferenteCaracteristica(OferenteCaracteristica oc, Integer idCaracteristica) {
+        // Buscamos la característica técnica (Java, SQL, etc.) por su ID
+        Caracteristica c = caracteristicaRepository.findById(idCaracteristica).orElse(null);
+        if (c != null) {
+            oc.setIdCaracteristica(c);
+            oferenteCaracteristicaRepository.save(oc);
+        }
     }
 
     //================CV=============================//
@@ -265,27 +273,36 @@ public class LogicService {
     //=======================MATCH CANDIDATOS===========================
 
     public List<CandidatoMatch> buscarCandidatosParaPuesto(Integer idPuesto) {
-        // 1. Obtener requisitos del puesto
+        //  Obtener los requisitos del puesto
         List<PuestoCaracteristica> requisitos = puestoCaracteristicaRepository.findAll()
                 .stream().filter(pc -> pc.getIdPuesto().getId().equals(idPuesto))
                 .collect(Collectors.toList());
 
         if (requisitos.isEmpty()) return new ArrayList<>();
 
-        // 2. Obtener todos los oferentes activos
         List<Oferente> todosLosOferentes = oferenteRepository.findAll();
         List<CandidatoMatch> resultados = new ArrayList<>();
 
         for (Oferente oferente : todosLosOferentes) {
-            // Habilidades del candidato actual
             List<OferenteCaracteristica> habilidadesCandidato =
                     oferenteCaracteristicaRepository.findByCedulaOferenteCedula(oferente.getCedula());
 
             int coincidencias = 0;
+
+
             for (PuestoCaracteristica req : requisitos) {
                 for (OferenteCaracteristica hab : habilidadesCandidato) {
-                    // Compara si es la misma habilidad y si el nivel del candidato es >= al deseado
-                    if (hab.getIdCaracteristica().getId().equals(req.getIdCaracteristica().getId())
+
+                    // 1. ¿Son la misma?
+                    boolean matchDirecto = hab.getIdCaracteristica().getId().equals(req.getIdCaracteristica().getId());
+
+                    // 2. ¿El candidato tiene un HIJO de lo que pide el puesto? (Caso: Puesto pide Lenguajes, Candidato tiene Java)
+                    boolean candidatoTieneEspecialidad = verificarSiEsAncestro(req.getIdCaracteristica(), hab.getIdCaracteristica());
+
+                    // 3. ¿El candidato tiene el PADRE de lo que pide el puesto? (Caso: Puesto pide Java, Candidato tiene Lenguajes)
+                    boolean candidatoTieneBaseGeneral = verificarSiEsAncestro(hab.getIdCaracteristica(), req.getIdCaracteristica());
+
+                    if ((matchDirecto || candidatoTieneEspecialidad || candidatoTieneBaseGeneral)
                             && hab.getNivel() >= req.getNivelDeseado()) {
                         coincidencias++;
                         break;
@@ -293,21 +310,33 @@ public class LogicService {
                 }
             }
 
-            // Calcular porcentaje (Regla de 3)
+            // Calcular porcentaje
             double porcentaje = (double) coincidencias / requisitos.size() * 100;
 
-            if (porcentaje > 0) { // Solo mostrar si tiene al menos algo de match
+            if (porcentaje > 0) {
                 CandidatoMatch match = new CandidatoMatch();
                 match.setOferente(oferente);
-                match.setPorcentaje(Math.round(porcentaje * 100.0) / 100.0); // Redondear 2 decimales
+                match.setPorcentaje(Math.round(porcentaje * 100.0) / 100.0);
                 match.setCoincidencias(coincidencias);
                 resultados.add(match);
             }
         }
 
-        // Ordenar de mayor a menor porcentaje
+        // Ordenar de mayor a menor afinidad
         resultados.sort((a, b) -> Double.compare(b.getPorcentaje(), a.getPorcentaje()));
         return resultados;
+    }
+
+    private boolean verificarSiEsAncestro(Caracteristica ancestroBuscado, Caracteristica objetivo) {
+        Caracteristica actual = objetivo;
+        // Agregamos la validación 'actual != null' para seguridad
+        while (actual != null && actual.getIdPadre() != null) {
+            if (actual.getIdPadre().getId().equals(ancestroBuscado.getId())) {
+                return true;
+            }
+            actual = actual.getIdPadre();
+        }
+        return false;
     }
 
     public void guardarPuestoCaracteristica(Puesto puesto, Integer caracteristicaId, Integer nivel) {
@@ -333,7 +362,7 @@ public class LogicService {
 
 
     /*=======VISTA PRINCIPAL=============*/
-    // Este lo usas para la página principal (index) donde entra cualquiera
+
     public List<Puesto> listarPuestosPublicos() {
         return puestoRepository.findAll().stream()
                 .filter(p -> p.getActivo() != null && p.getActivo()
@@ -343,7 +372,7 @@ public class LogicService {
                 .collect(Collectors.toList());
     }
 
-    // Este lo usas cuando un Oferente ya inició sesión
+
     public List<Puesto> listarPuestosParaOferenteLogueado() {
         return puestoRepository.findAll().stream()
                 .filter(p -> p.getActivo() == true) // Ve públicas y privadas
@@ -366,6 +395,17 @@ public class LogicService {
 
     public List<Caracteristica> listarSubcategorias(Caracteristica padre) {
         return caracteristicaRepository.findByIdPadre(padre); //
+    }
+
+
+    public List<Caracteristica> listarSubcategoriasPorId(Integer idPadre) {
+        // Primero obtenemos el objeto padre usando el ID
+        Caracteristica padre = caracteristicaRepository.findById(idPadre).orElse(null);
+        if (padre != null) {
+
+            return caracteristicaRepository.findByIdPadre(padre);
+        }
+        return new ArrayList<>();
     }
 
     public List<Puesto> buscarPuestosFiltrados(List<Integer> ids, String moneda) {
@@ -468,7 +508,7 @@ public class LogicService {
         for (Oferente o : oferentes) {
             document.add(new Paragraph("Candidato: " + o.getNombre() + " " + o.getApellido() + " (Céd: " + o.getCedula() + ")"));
 
-            List<OferenteCaracteristica> habilidades = oferenteCaracteristicaRepository.findByCedulaOferente(o.getCedula());
+            List<OferenteCaracteristica> habilidades = oferenteCaracteristicaRepository.findByCedulaOferenteCedula(o.getCedula());
 
             PdfPTable table = new PdfPTable(2);
             table.setWidthPercentage(80);

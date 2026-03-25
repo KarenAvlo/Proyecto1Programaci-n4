@@ -24,7 +24,7 @@
     <h2>Centro de Reportes</h2>
 
     <div class="section">
-        <form th:action="@{/admin/reportes/exportar/empresas}" method="get" target="_blank">
+        <form th:action="@{/admin/reporte/mensual}" method="get" target="_blank">
             <label>Seleccione el Mes de Publicación:</label>
             <select name="mes" required>
                 <option value="1">Enero</option>
@@ -47,8 +47,13 @@
     <hr>
 
     <div class="section">
-        <p style="font-size: 0.9em; color: #718096; margin-bottom: 15px;">Genera un informe detallado con estadísticas de todos los oferentes registrados.</p>
-        <a th:href="@{/admin/reportes/exportar/oferentes}" target="_blank" class="btn btn-oferentes">
+        <p style="font-size: 0.9em; color: #718096; margin-bottom: 15px;">
+            Genera un informe detallado con estadísticas de todos los oferentes registrados.
+        </p>
+
+        <a th:href="@{/admin/reportes/exportar/oferentes}"
+           target="_blank"
+           class="btn btn-oferentes">
             2) Reporte PDF: Oferentes y Estadísticas
         </a>
     </div>

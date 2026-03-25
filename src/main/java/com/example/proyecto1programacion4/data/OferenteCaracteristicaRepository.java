@@ -8,5 +8,7 @@ import java.util.List;
 public interface OferenteCaracteristicaRepository extends JpaRepository<OferenteCaracteristica, Integer> {
     List<OferenteCaracteristica> findByCedulaOferente(String cedula);
 
+
     List<OferenteCaracteristica> findByCedulaOferenteCedula(String cedula);
+
 }

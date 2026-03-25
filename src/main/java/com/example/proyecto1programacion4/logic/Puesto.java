@@ -52,6 +52,7 @@ public class Puesto {
     @org.hibernate.annotations.CreationTimestamp
     private Instant fechaPublicacion;
 
+
     // Importante: No crea tablas nuevas, solo mapea la relación que ya existe en SQL
     @OneToMany(mappedBy = "idPuesto", fetch = FetchType.LAZY)
     private List<PuestoCaracteristica> puestoCaracteristicas = new ArrayList<>();
@@ -68,4 +69,5 @@ public class Puesto {
         }
         return sb.toString();
     }
+
 }

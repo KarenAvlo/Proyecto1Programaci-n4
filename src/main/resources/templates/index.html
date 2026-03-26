@@ -7,7 +7,6 @@
 </head>
 <body class="bg-light">
 
-<!--Barra de navegación-->
 <nav class="navbar">
     <div>
         <a href="/">Bolsa de Empleo</a>
@@ -30,20 +29,31 @@
     </div>
 </nav>
 
-<!--Contenido Principal-->
+<div class="puestos-grid-container">
+    <div class="card-puesto" th:each="p : ${puestos}">
+        <div>
+            <h3 th:text="${p.emailEmpresa.nombre}">SoftLab</h3>
+            <p th:text="${p.descripcion}">Unity game developer</p>
+            <div class="salario">
+                <span th:text="${p.moneda ?: '₡'}"></span>
+                <span th:text="${#numbers.formatDecimal(p.salarioOfrecido, 1, 'POINT', 2, 'COMMA')}"></span>
+            </div>
+        </div>
 
-<div class="container mt-5">
-    <div class="p-5 mb-4 bg-white rounded-3 shadow-sm text-center">
-        <h1 class="display-5 fw-bold">Encuentra tu próximo desafío</h1>
-        <p class="fs-4">La plataforma líder para conectar empresas con el mejor talento.</p>
-        <hr class="my-4">
-        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-            <a th:href="@{/puestos/buscar}" class="btn btn-primary btn-lg px-4">Ver Ofertas</a>
+        <button class="btn-detalle">Ver detalle</button>
 
-            <a th:href="@{/registro/empresa}" class="btn btn-outline-secondary btn-lg px-4">Soy una Empresa</a>
+        <div class="detalle-flotante">
+            <strong th:text="${p.descripcion}">Nombre del Puesto</strong>
+            <ul>
+                <li th:each="char : ${p.puestoCaracteristicas}">
+                    <span th:text="${char.idCaracteristica.nombre}"></span>
+                    (nivel <span th:text="${char.nivelDeseado}"></span>)
+                </li>
+            </ul>
         </div>
     </div>
 </div>
+
 <footer class="footer-dark">
     <div>
         <strong>Bolsa de Empleo</strong><br>
@@ -54,5 +64,6 @@
         © 2026
     </div>
 </footer>
+
 </body>
 </html>

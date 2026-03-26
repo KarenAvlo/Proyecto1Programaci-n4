@@ -45,23 +45,27 @@ public class EmpresaController {
         return "publicar_puesto";
     }
 
-    @PostMapping("/savePuesto") // Asegúrate de que coincida con el th:action de tu HTML
-    public String guardarPuesto(
-            @ModelAttribute("puesto") Puesto puesto,
-            @RequestParam(value = "nomCaracteristica", required = false) String[] nombres,
-            @RequestParam(value = "nivelCaracteristica", required = false) Integer[] niveles,
-            Authentication auth
-    ) {
-        Empresa e = logicService.buscarEmpresaPorEmail(auth.getName());
-        puesto.setEmailEmpresa(e);
+
+    @PostMapping("/save")
+    public String savePuesto(@ModelAttribute("puesto") Puesto puesto,
+                             @RequestParam(value = "caracteristicaIds", required = false) List<Integer> caracteristicaIds,
+                             @RequestParam(value = "niveles", required = false) List<Integer> niveles,
+                             Authentication auth) {
+
+        String email = auth.getName();
+        Empresa empresa = logicService.buscarEmpresaPorEmail(email);
+        puesto.setEmailEmpresa(empresa);
         puesto.setActivo(true);
 
-        Puesto guardado = logicService.guardarPuesto(puesto);
+        // Guardamos el puesto
+        Puesto puestoGuardado = logicService.guardarPuesto(puesto);
 
-        if (nombres != null && niveles != null) {
-            for (int i = 0; i < nombres.length; i++) {
-                if (nombres[i] != null && !nombres[i].isEmpty()) {
-                    logicService.guardarRequisito(guardado, nombres[i], niveles[i]);
+        // Guardamos las características solo si se seleccionaron
+        if (caracteristicaIds != null && niveles != null) {
+            for (int i = 0; i < caracteristicaIds.size(); i++) {
+                // Verificamos que se haya seleccionado una opción válida (no el placeholder vacío)
+                if (caracteristicaIds.get(i) != null && i < niveles.size()) {
+                    logicService.guardarPuestoCaracteristica(puestoGuardado, caracteristicaIds.get(i), niveles.get(i));
                 }
             }
         }
@@ -85,19 +89,76 @@ public class EmpresaController {
 
 
 
-/*
-    // Listar solo los puestos de una empresa específica
-    public List<Puesto> listarPuestosPorEmpresa(Empresa empresa) {
-        return puestoRepository.findByEmailEmpresa(empresa);
+    @GetMapping("/desactivar/{id}")
+    public String desactivarPuesto(@PathVariable("id") Integer id) {
+        logicService.desactivarPuesto(id);
+        return "redirect:/empresa/show";
     }
 
-    // Buscar un puesto por ID (útil para desactivar)
-    public Puesto buscarPuestoPorId(Integer id) {
-        return puestoRepository.findById(id).orElse(null);
+    @GetMapping("/PDFOferente/{cedula}")
+    public ResponseEntity<Resource> getPDFOferente(@PathVariable String cedula){
+        try {
+            Resource pdf = logicService.obtenerArchivoCV(cedula);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + pdf.getFilename() + "\"")
+                    .body(pdf);
+
+        } catch (Exception e) {
+            System.err.println("Error al intentar visualizar el CV: " + e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    // El método de guardar (que ya tienes) sirve para actualizar el estado 'activo'
-    public void actualizarPuesto(Puesto p) {
-        puestoRepository.save(p);
-    }*/
+    @GetMapping("/buscar-candidatos/{id}")
+    public String buscarCandidatos(@PathVariable("id") Integer id, Model model, Authentication auth) {
+        model.addAttribute("correoUsuario", auth.getName());
+
+        // Buscamos los matches usando el servicio
+        List<CandidatoMatch> candidatos = logicService.buscarCandidatosParaPuesto(id);
+
+        model.addAttribute("candidatos", candidatos);
+        model.addAttribute("puestoId", id);
+
+        return "CandidatoMatchView"; // El nombre de tu nuevo HTML
+    }
+
+    @GetMapping("/ver-perfil/{cedula}")
+    public String verDetalleCandidato(@PathVariable("cedula") String cedula,
+                                      @RequestParam(value = "puestoId", required = false) Integer puestoId,
+                                      Model model,
+                                      Authentication auth) {
+        //  Enviamos el correo de la empresa para el navbar
+        model.addAttribute("correoUsuario", auth.getName());
+
+        //  Buscamos al oferente usando el método que creamos (por cédula)
+        Oferente oferente = logicService.buscarOferentePorCedula(cedula);
+
+        if (oferente != null) {
+            //  Cargamos sus habilidades usando su cédula
+            List<OferenteCaracteristica> habilidades = logicService.listarCaracteristicasOferente(cedula);
+
+            model.addAttribute("oferente", oferente);
+            model.addAttribute("habilidades", habilidades);
+        }
+
+        //  Pasamos el puestoId para que el botón "Volver" sepa a dónde regresar
+        model.addAttribute("puestoId", puestoId);
+
+        return "DetalleOferenteView";
+    }
+    @GetMapping("/ver-pdf/{cedula}")
+    public ResponseEntity<Resource> verPdfCandidato(@PathVariable String cedula) {
+        try {
+
+            Resource pdf = logicService.obtenerArchivoCV(cedula);
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + pdf.getFilename() + "\"")
+                    .body(pdf);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

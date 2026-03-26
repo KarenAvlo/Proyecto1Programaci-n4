@@ -20,44 +20,77 @@ import java.nio.file.Paths;
 @RequestMapping("/presentation/oferente")
 public class OferenteController {
 
-        @Autowired
-        LogicService service;
+    @Autowired
+    LogicService service;
 
     @GetMapping("/show")
-    public String dashboard(Model model) {
-        //obtener nombre el oferente al iniciar seccion
-        String nombreOferente ="Juann Perez";
-        model.addAttribute("nombreOferente",nombreOferente);
+    public String dashboard(Authentication auth, Model model) {
+        // Validar que la autenticación no sea nula
+        if (auth != null && auth.isAuthenticated()) {
+            String email = auth.getName(); // El email del que se logueó
+            Oferente oferente = service.buscarOferentePorEmail(email);
+
+            //  Pasamos el objeto al modelo para que el HTML lo vea
+            model.addAttribute("usuarioLogueado", oferente);
+        }
         return "dashboard_oferente";
     }
 
+
     @GetMapping("/habilidades")
-    public String verHabilidades(Authentication auth, Model model) {
-        String email = auth.getName();//correo el oferente
-        Oferente oferente = service.buscarOferentePorEmail(email); //se busca al  oferente
+    public String verHabilidades(@RequestParam(value = "actualId", required = false) Integer actualId,
+                                 Authentication auth,
+                                 Model model) {
+        String email = auth.getName();
+        Oferente oferente = service.buscarOferentePorEmail(email);
+
         if (oferente != null) {
-            String cedula = oferente.getCedula();
-            model.addAttribute("listaHabilidades", service.listarCaracteristicasOferente(cedula));
-            model.addAttribute("nuevaHabilidad", service.listaCaracteristicasPadre());
-            model.addAttribute("nuevaCategoria", new OferenteCaracteristica());
+            // Cargar Habilidades ya registradas
+            model.addAttribute("misHabilidades", service.listarCaracteristicasOferente(oferente.getCedula()));
+
+            //  Lógica de Navegación y Subcategorías
+            if (actualId != null) {
+                model.addAttribute("subcategorias", service.listarSubcategoriasPorId(actualId));
+                model.addAttribute("actual", service.buscarCaracteristicaPorId(actualId));
+
+            } else {
+                model.addAttribute("subcategorias", service.listaCaracteristicasPadre());
+            }
+
+            //  Datos para el Header (Evita que la página explote)
+            model.addAttribute("nombreOferente", oferente.getNombre());
         }
-        return "oferente_habilidades"; // Nombre de tu archivo HTML
+        return "oferente_habilidades";
     }
 
     @PostMapping("/saveCaracteristica")
-    public String saveCaracteristica(
-            @ModelAttribute("nuevaHabilidad")OferenteCaracteristica nuevaCaracteristica, Authentication auth) {
-            String emmail = auth.getName();
-            Oferente oferente = service.buscarOferentePorEmail(emmail);
-            if (oferente != null) {
-                nuevaCaracteristica.setCedulaOferente(oferente);
-                service.guardarOferenteCaracteristica(nuevaCaracteristica);
-            }
+    public String saveCaracteristica(@ModelAttribute("nuevaHabilidad") OferenteCaracteristica nueva,
+                                     @RequestParam("idCaracteristica") Integer idCarac,
+                                     Authentication auth) {
+        String email = auth.getName();
+        Oferente oferente = service.buscarOferentePorEmail(email);
+
+        if (oferente != null) {
+            nueva.setCedulaOferente(oferente);
+            // Llamamos al service pasando la característica seleccionada
+            service.guardarOferenteCaracteristica(nueva, idCarac);
+        }
         return "redirect:/presentation/oferente/habilidades";
     }
 
-    @GetMapping("/CV")
+  /*  @GetMapping("/CV")
     public String formularioCV() {
+        return "CVform";
+    }*/
+
+    @GetMapping("/mi-cv")
+    public String mostrarPaginaCV(Authentication auth, Model model) {
+        String email = auth.getName();
+        Oferente oferente = service.buscarOferentePorEmail(email);
+
+        // El HTML busca "oferente", así que aquí debemos poner "oferente"
+        model.addAttribute("oferente", oferente);
+
         return "CVform";
     }
 

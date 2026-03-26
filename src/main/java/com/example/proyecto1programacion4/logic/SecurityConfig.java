@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
-                        .successHandler(successHandler) // <--- Aquí activamos la redirección lógica
+                        .successHandler(successHandler) //  Aquí activamos la redirección lógica
                         .failureUrl("/login?error=true")//si falla, vuelve con error
                         .permitAll()
                 )

@@ -40,51 +40,71 @@ public class RegistroController {
             @RequestParam("email") String email,
             @RequestParam("clave") String clave,
             @RequestParam("tipo") String tipo,
+            // Parámetros para Oferente
             @RequestParam(value = "cedula", required = false) String cedula,
             @RequestParam(value = "nombre", required = false) String nombre,
             @RequestParam(value = "apellido", required = false) String apellido,
+            @RequestParam(value = "nacionalidad", required = false) String nacionalidad,
             @RequestParam(value = "telefono", required = false) String telefono,
+            @RequestParam(value = "residencia", required = false) String residencia,
+            // Parámetros para Empresa
             @RequestParam(value = "localizacion", required = false) String localizacion,
             @RequestParam(value = "descripcion", required = false) String descripcion,
             Model model) {
 
         try {
-            Usuario u = new Usuario();
-            u.setEmail(email);
-            u.setClave(clave);
+            // Verificación de seguridad: ¿Ya existe el correo?
+            if (usuarioRepository.findById(email).isPresent()) {
+                model.addAttribute("error", "El correo electrónico ya está registrado.");
+                return "OFERENTE".equals(tipo) ? "form_oferente" : "form_empresa";
+            }
 
+            //  Encriptación de la contraseña (Vital para seguridad)
+            String claveEncriptada = passwordEncoder.encode(clave);
+
+            //  Creación y persistencia según el tipo
             if ("OFERENTE".equals(tipo)) {
                 Oferente o = new Oferente();
+
+                // Datos de la clase Usuario (Herencia)
                 o.setEmail(email);
-                o.setClave(clave);
+                o.setClave(claveEncriptada);
                 o.setTipo("OFERENTE");
+
+                // Datos específicos de Oferente (Requerimientos nuevos)
                 o.setCedula(cedula);
                 o.setNombre(nombre);
                 o.setApellido(apellido);
-                service.registrarOferente(o);
+                o.setNacionalidad(nacionalidad);
+                o.setTelefono(telefono);
+                o.setResidencia(residencia);
+
+                service.registrarOferente(o); // Guarda en DB
+
             } else if ("EMPRESA".equals(tipo)) {
                 Empresa e = new Empresa();
+
+                // Datos de la clase Usuario (Herencia)
                 e.setEmail(email);
-                e.setClave(clave);
-                e.setNombre(nombre);
+                e.setClave(claveEncriptada);
                 e.setTipo("EMPRESA");
-                // --- ASIGNACIÓN DE LOS NUEVOS CAMPOS ---
+
+                // Datos específicos de Empresa
+                e.setNombre(nombre);
                 e.setTelefono(telefono);
                 e.setLocalizacion(localizacion);
                 e.setDescripcion(descripcion);
-                // ---------------------------------------
-                service.registrarEmpresa(e);
+
+                service.registrarEmpresa(e); // Guarda en DB
             }
 
-            // Si llega aquí, todo salió BIEN
+            // Todo salió bien, redirigir al login con mensaje de éxito
             return "redirect:/login?success";
 
         } catch (Exception e) {
-            // Si entra aquí, algo FALLÓ (por eso te quedas en el registro)
-            e.printStackTrace(); // MIRA TU CONSOLA DE IDE PARA VER EL ERROR REAL
-            model.addAttribute("error", "Error: " + e.getMessage());
-            return "EMPRESA".equals(tipo) ? "form_empresa" : "form_oferente";
+            e.printStackTrace();
+            model.addAttribute("error", "Error en el registro: " + e.getMessage());
+            return "OFERENTE".equals(tipo) ? "form_oferente" : "form_empresa";
         }
-
     }
 }

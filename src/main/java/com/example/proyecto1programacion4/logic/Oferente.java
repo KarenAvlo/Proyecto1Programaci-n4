@@ -38,11 +38,6 @@ public class Oferente extends Usuario{
     @Column(name = "residencia", length = 200)
     private String residencia;
 
-    //@MapsId
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "email")
-//    private Usuario email;
-
     @Size(max = 255)
     @Column(name = "curriculo_path")
     private String curriculoPath;

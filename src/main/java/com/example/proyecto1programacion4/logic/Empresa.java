@@ -12,12 +12,7 @@ import lombok.Setter;
 @Table(name = "empresa")
 public class Empresa extends Usuario{
 
-//    @Id
-//    private String email;
-//    @MapsId
-//    @OneToOne(fetch = FetchType.EAGER, optional = false)
-//    @JoinColumn(name = "email")
-//    private Usuario usuario;
+
 
     @Size(max = 100)
     @NotNull

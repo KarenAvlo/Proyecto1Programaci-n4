@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${nombreOferente} + ' - Dashboard'">Oferente - Dashboard</title>
+    <title>Oferente - Dashboard</title>
     <style>
         /* Configuración Global */
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
@@ -20,76 +18,59 @@
             min-height: 100vh;
         }
 
-        /* Header Oscuro Estilo Imagen */
+        /* HEADER / NAVBAR */
         header {
             background-color: #1a1a1a;
             color: white;
-            padding: 10px 60px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 0 60px; /* Quitamos padding vertical para que la navbar controle el alto */
         }
 
-        .nav-left {
+        .navbar {
             display: flex;
+            justify-content: space-between; /* ESTO EMPUJA TODO A LOS EXTREMOS */
             align-items: center;
-            gap: 25px;
+            height: 60px;
+            width: 100%;
         }
 
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        /* Logo a la izquierda */
+        .nav-brand a {
+            color: white;
+            text-decoration: none;
             font-weight: bold;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
         }
 
-        .logo-icon {
-            width: 30px;
-            height: 30px;
-            background-color: white;
-            border-radius: 50%;
+        /* Contenedor de links y usuario a la derecha */
+        .nav-items-right {
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: #1a1a1a;
-            font-size: 0.8rem;
-        }
-
-        nav {
-            display: flex;
             gap: 20px;
         }
 
-        nav a {
+        .nav-items-right a {
             color: #b0b0b0;
             text-decoration: none;
             font-size: 14px;
             transition: color 0.3s;
         }
 
-        nav a:hover {
+        .nav-items-right a:hover {
             color: #ffffff;
         }
 
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-size: 14px;
-        }
-
-        .btn-salir {
-            border: 1px solid #444;
+        /* Estilo específico para el botón Salir */
+        .btn-logout {
+            color: white !important;
+            border: 1px solid white;
             padding: 4px 12px;
             border-radius: 4px;
-            color: white;
             text-decoration: none;
-            transition: background 0.3s;
+            margin-left: 10px;
         }
 
-        .btn-salir:hover {
-            background-color: #333;
+        .btn-logout:hover {
+            background-color: rgba(255, 255, 255, 0.1);
         }
 
         /* Contenido Principal */
@@ -98,25 +79,11 @@
             padding: 60px 100px;
         }
 
-        h1 {
-            font-size: 32px;
-            margin: 0 0 10px 0;
-            color: #222;
-        }
-
-        .subtitle {
-            color: #777;
-            margin-bottom: 30px;
-            font-size: 16px;
-        }
+        h1 { font-size: 32px; margin: 0 0 10px 0; color: #222; }
+        .subtitle { color: #777; margin-bottom: 30px; font-size: 16px; }
 
         /* Botones Azules */
-        .actions-container {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
+        .actions-container { display: flex; gap: 10px; align-items: center; }
         .btn-blue {
             background-color: #007bff;
             color: white;
@@ -127,21 +94,9 @@
             font-weight: 500;
             border: none;
             cursor: pointer;
-            display: inline-block;
             transition: background 0.3s;
         }
-
-        .btn-blue:hover {
-            background-color: #0056b3;
-        }
-
-        /* Feedback de subida */
-        .alert-info {
-            margin-top: 20px;
-            color: #0056b3;
-            font-size: 14px;
-            font-style: italic;
-        }
+        .btn-blue:hover { background-color: #0056b3; }
 
         /* Footer Oscuro */
         footer {
@@ -151,71 +106,71 @@
             display: flex;
             justify-content: space-between;
             font-size: 12px;
-            border-top: 1px solid #333;
-        }
-
-        .footer-brand {
-            font-weight: bold;
-            color: #bbb;
-            margin-bottom: 5px;
-            display: block;
-        }
-
-        .footer-right {
-            text-align: right;
-            line-height: 1.6;
+            margin-top: auto;
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="nav-left">
-        <div class="logo-container">
-            <div class="logo-icon">BE</div>
-            BolsaEmpleo
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a th:href="@{/}">Bolsa de Empleo</a>
         </div>
-        <nav>
-            <a th:href="@{/presentation/oferente/dashboard}">Dashboard</a>
-            <a th:href="@{/presentation/oferente/habilidades/view}">Mis habilidades</a>
-            <a href="#">Mi CV</a>
-        </nav>
-    </div>
-    <div class="nav-right">
-        <span th:text="${correoOferente != null ? correoOferente : 'usuario@correo.com'}">jsanchez@sanchez.com</span>
-        <a href="/logout" class="btn-salir">Salir</a>
-    </div>
+
+        <div class="nav-items-right">
+            <a th:href="@{/presentation/oferente/show}">Dashboard</a>
+            <a th:href="@{/presentation/oferente/habilidades}">Mis Habilidades</a>
+            <a th:href="@{/presentation/oferente/mi-cv}">Mi CV</a>
+
+            <span style="color: white; font-size: 14px; margin-left: 10px;"
+                  th:text="${usuarioLogueado?.email}">usuario@correo.com</span>
+
+            <a th:href="@{/logout}" class="btn-logout">Salir</a>
+        </div>
+    </nav>
 </header>
 
 <main>
-    <h1 th:text="${nombreOferente} + ' - Dashboard'">Oferente - Dashboard</h1>
+    <h1>Oferente - Dashboard</h1>
     <p class="subtitle">Administra tus habilidades y tu CV.</p>
 
     <div class="actions-container">
-        <a th:href="@{/presentation/oferente/habilidades/view}" class="btn-blue">Mis habilidades</a>
+        <a th:href="@{/presentation/oferente/habilidades}" class="btn-blue">Mis habilidades</a>
 
-        <form th:action="@{/presentation/oferente/cv/upload}" method="post" enctype="multipart/form-data" id="cvForm">
-            <label for="cv-file" class="btn-blue">
-                Mi CV
-            </label>
-            <input type="file" id="cv-file" name="file" accept="application/pdf"
-                   style="display: none;" onchange="document.getElementById('cvForm').submit();">
+        <form th:action="@{/presentation/oferente/cvUpload}" method="post" enctype="multipart/form-data" id="cvForm">
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 10px; color: #4a5568;">
+                    Seleccionar archivo PDF:
+                </label>
+
+                <input type="file"
+                       id="cv-file"
+                       name="archivo"
+                       accept="application/pdf"
+                       required
+                       style="display: block; width: 100%; padding: 10px; border: 1px solid #cbd5e0; border-radius: 6px;">
+            </div>
+
+            <button type="submit" class="btn-blue" style="background-color: #28a745; border: none; width: 100%; cursor: pointer;">
+                Guardar Currículum
+            </button>
         </form>
     </div>
 
-    <div th:if="${mensaje}" class="alert-info">
+    <div th:if="${mensaje}" class="alert-info" style="margin-top: 20px; color: #007bff;">
         <p th:text="${mensaje}"></p>
     </div>
 </main>
 
-<footer>
+<footer class="footer-dark">
     <div>
-        <span class="footer-brand">Bolsa de Empleo</span>
+        <strong>Bolsa de Empleo</strong><br>
         Total Soft Inc.
     </div>
-    <div class="footer-right">
+    <div style="text-align: right; line-height: 1.4;">
         Contacto: info@bolsaempleo.local<br>
-        Créditos: Equipo de desarrollo
+        © 2026
     </div>
 </footer>
 

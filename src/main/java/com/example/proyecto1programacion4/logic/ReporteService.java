@@ -75,7 +75,6 @@ public class ReporteService {
         int totalOferentes = oferentes.size();
         int totalHabilidades = 0;
         double sumaNiveles = 0;
-        //int totalDetallesHabilidades = 0;
 
         for (Oferente o : oferentes) {
             document.add(new Paragraph("Oferente: " + o.getNombre() + " " + o.getApellido()));

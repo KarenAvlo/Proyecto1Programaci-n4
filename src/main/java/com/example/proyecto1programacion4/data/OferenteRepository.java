@@ -16,7 +16,7 @@ public interface OferenteRepository extends JpaRepository<Oferente,String> {
     @Query("SELECT o FROM Oferente o WHERE o.estado = false")
     List<Oferente> findPendientes();
 
-    Optional<Oferente> findByEmail(String email);
-
     Optional<Oferente> findByCedula(String cedula);
+
+    Optional<Oferente> findByEmail(String email);
 }

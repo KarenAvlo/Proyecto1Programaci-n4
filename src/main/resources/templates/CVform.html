@@ -41,13 +41,12 @@
         </div>
     </div>
 
-    <form th:action="@{/presentation/oferente/cv/upload}" method="post" enctype="multipart/form-data">
+    <form th:action="@{/presentation/oferente/cvUpload}" method="post" enctype="multipart/form-data">
         <div class="upload-area">
             <input type="file" name="archivo" id="archivo" accept="application/pdf" required>
             <p style="font-size: 0.75em; color: #a0aec0; margin-top: 10px;">Tamaño máximo recomendado: 5MB</p>
         </div>
-
-        <button type="submit" class="btn-upload">Actualizar Currículum</button>
+        <button type="submit" class="btn-upload">Guardar y subir currículum</button>
     </form>
 
     <div style="margin-top: 30px;">

@@ -7,6 +7,10 @@ import com.example.proyecto1programacion4.logic.Caracteristica;
 import com.example.proyecto1programacion4.logic.LogicService;
 import com.example.proyecto1programacion4.logic.SecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,10 +40,10 @@ public class AdminController {
 
     @GetMapping("/empresas-pendientes")
     public String listarEmpresas(Authentication authentication, Model model) {
-        // 1. Cargamos la lista de empresas
+        //  Cargamos la lista de empresas
         model.addAttribute("empresas", logicService.findEmpresasPendientes());
 
-        // 2. Cargamos el correo para el navbar
+        //  Cargamos el correo para el navbar
         String email = (authentication != null) ? authentication.getName() : "Admin";
         model.addAttribute("correoUsuario", email);
 
@@ -48,19 +52,19 @@ public class AdminController {
 
     @GetMapping("/oferentes-pendientes")
     public String listarOferentes(Authentication authentication, Model model) {
-        // 1. Enviamos la lista de OFERENTES
+        // Enviamos la lista de OFERENTES
         model.addAttribute("oferentes", logicService.findOferentesPendientes());
 
-        // 2. Enviamos el correo para el nav
+        // Enviamos el correo para el nav
         model.addAttribute("correoUsuario", authentication.getName());
 
-        // 3. Retornamos la vista (asegúrate de que esté en la carpeta admin si usas esa ruta)
+        // Retornamos la vista
         return "oferentes_pendientes";
     }
 
     @PostMapping("/autorizar/{email}")
     public String autorizar(@PathVariable String email, @RequestParam String tipo) {
-        logicService.aprobarUsuario(email); // Método existente en tu SecurityConfig
+        logicService.aprobarUsuario(email);
         return "redirect:/admin/" + (tipo.equals("EMPRESA") ? "empresas" : "oferentes") + "-pendientes";
     }
 
@@ -77,7 +81,7 @@ public class AdminController {
             model.addAttribute("padre", padreObj);
             model.addAttribute("lista", caracRepo.findByIdPadre(padreObj));
         }
-        // Si el archivo está en src/main/resources/templates/admi_caracteristicas.html
+
         return "admi_caracteristicas";
     }
 
@@ -111,6 +115,66 @@ public class AdminController {
     public void addAttributes(org.springframework.security.core.Authentication authentication, org.springframework.ui.Model model) {
         if (authentication != null) {
             model.addAttribute("correoUsuario", authentication.getName());
+        }
+    }
+
+    @GetMapping("/reportes/puestos-mes")
+    public ResponseEntity<byte[]> reportePuestosPorMes(@RequestParam("mes") int mes) {
+        try {
+            // Llamamos al servicio para generar el contenido del PDF
+            byte[] pdfContenido = logicService.generarReporteEmpresasPDF(mes);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("attachment", "reporte_puestos_mes_" + mes + ".pdf");
+
+            return new ResponseEntity<>(pdfContenido, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/reporte/mensual")
+    public ResponseEntity<byte[]> descargarReporteMensual(@RequestParam("mes") int mes) {
+        try {
+            byte[] pdfBytes = logicService.generarReporteEmpresasPDF(mes);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            // "inline" para abrir en el navegador, "attachment" para descargar directo
+            headers.setContentDispositionFormData("inline", "Reporte_Mes_" + mes + ".pdf");
+
+            return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/reportes")
+    public String paginaReportes(Authentication authentication, Model model) {
+        // Pasamos el correo para el navbar como en los otros métodos
+        String email = (authentication != null) ? authentication.getName() : "Admin";
+        model.addAttribute("correoUsuario", email);
+
+        return "admin_reportes"; // Este es el nombre de tu archivo HTML
+    }
+
+
+    @GetMapping("/reportes/exportar/oferentes")
+    public ResponseEntity<byte[]> descargarReporteOferentes() {
+        try {
+
+            byte[] pdfBytes = logicService.generarReporteOferentesPDF();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("inline", "Reporte_Estadistico_Oferentes.pdf");
+
+            return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

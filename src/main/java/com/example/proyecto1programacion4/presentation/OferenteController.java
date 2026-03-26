@@ -5,13 +5,21 @@ import com.example.proyecto1programacion4.logic.OferenteCaracteristica;
 import com.example.proyecto1programacion4.logic.SecurityConfig;
 import com.example.proyecto1programacion4.logic.Oferente;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -78,20 +86,34 @@ public class OferenteController {
         return "redirect:/presentation/oferente/habilidades";
     }
 
-  /*  @GetMapping("/CV")
-    public String formularioCV() {
-        return "CVform";
-    }*/
-
     @GetMapping("/mi-cv")
-    public String mostrarPaginaCV(Authentication auth, Model model) {
-        String email = auth.getName();
-        Oferente oferente = service.buscarOferentePorEmail(email);
+    public ResponseEntity<Resource> mostrarPaginaCV(Authentication auth, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            Oferente oferente = service.buscarOferentePorEmail(auth.getName());
 
-        // El HTML busca "oferente", así que aquí debemos poner "oferente"
-        model.addAttribute("oferente", oferente);
+            if (oferente == null || oferente.getCurriculoPath() == null || oferente.getCurriculoPath().isEmpty()) {
+                redirectAttributes.addFlashAttribute("mensajeError", "No tienes un currículum cargado actualmente.");
+                return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, "/presentation/oferente/show").build();
+            }
 
-        return "CVform";
+            Path path = Paths.get("uploads").resolve(oferente.getCurriculoPath()).toAbsolutePath();
+            Resource resource = new UrlResource(path.toUri());
+
+            if (resource.exists() || resource.isReadable()) {
+                return ResponseEntity.ok()
+                        .contentType(MediaType.APPLICATION_PDF)
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + oferente.getCurriculoPath() + "\"")
+                        .body(resource);
+            } else {
+                redirectAttributes.addFlashAttribute("mensajeError", "El archivo físico no se encuentra en el servidor.");
+            }
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("mensajeError", "Error al intentar acceder al archivo.");
+        }
+
+        return ResponseEntity.status(HttpStatus.FOUND).header(HttpHeaders.LOCATION, "/presentation/oferente/show").build();
     }
 
     @PostMapping("/cvUpload")

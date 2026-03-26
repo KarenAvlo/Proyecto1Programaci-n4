@@ -72,20 +72,20 @@ public class EmpresaController {
         return "redirect:/empresa/show";
     }
 
-    @GetMapping("/PDFOferente")
-    public ResponseEntity<Resource> getPDFOferente(@PathVariable String cedula){
-        try {
-            Resource pdf = logicService.obtenerArchivoCV(cedula);
-            return ResponseEntity.ok()
-                    .contentType(MediaType.APPLICATION_PDF)
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + pdf.getFilename() + "\"")
-                    .body(pdf);
-
-        } catch (Exception e) {
-            System.err.println("Error al intentar visualizar el CV: " + e.getMessage());
-            return ResponseEntity.notFound().build();
-        }
-    }
+//    @GetMapping("/PDFOferente")
+//    public ResponseEntity<Resource> getPDFOferente(@PathVariable String cedula){
+//        try {
+//            Resource pdf = logicService.obtenerArchivoCV(cedula);
+//            return ResponseEntity.ok()
+//                    .contentType(MediaType.APPLICATION_PDF)
+//                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + pdf.getFilename() + "\"")
+//                    .body(pdf);
+//
+//        } catch (Exception e) {
+//            System.err.println("Error al intentar visualizar el CV: " + e.getMessage());
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
 
 
 

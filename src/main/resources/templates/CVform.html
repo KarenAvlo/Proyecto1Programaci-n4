@@ -3,23 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Bolsa de Empleo - Mi currículum</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 40px; }
-        .cv-container { max-width: 600px; margin: auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); text-align: center; }
-        .upload-area { border: 2px dashed #cbd5e0; padding: 30px; border-radius: 8px; margin: 20px 0; background-color: #fafafa; }
-        .btn-upload { background-color: #4A90E2; color: white; padding: 12px 25px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; }
-        .btn-upload:hover { background-color: #357ABD; }
-        .btn-view { display: inline-block; margin-top: 15px; color: #4A90E2; text-decoration: none; font-weight: 500; border: 1px solid #4A90E2; padding: 8px 20px; border-radius: 6px; }
-        .btn-view:hover { background-color: #f0f7ff; }
-        .alert { padding: 15px; border-radius: 6px; margin-bottom: 20px; font-size: 14px; }
-        .alert-success { background-color: #c6f6d5; color: #22543d; border: 1px solid #9ae6b4; }
-        .alert-error { background-color: #fed7d7; color: #822727; border: 1px solid #feb2b2; }
-        .status-badge { display: inline-block; padding: 5px 12px; border-radius: 20px; font-size: 12px; margin-bottom: 10px; }
-        .status-ok { background: #e6fffa; color: #2c7a7b; }
-        .status-none { background: #fff5f5; color: #c53030; }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+<header>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a th:href="@{/}">Bolsa de Empleo</a>
+        </div>
+
+        <div class="nav-items-right">
+            <a th:href="@{/presentation/oferente/show}">Dashboard</a>
+            <a th:href="@{/presentation/oferente/habilidades}">Mis Habilidades</a>
+            <a th:href="@{/presentation/oferente/mi-cv}">Mi CV</a>
+
+            <span style="color: white; font-size: 14px; margin-left: 10px;"
+                  th:text="${usuarioLogueado?.email}">usuario@correo.com</span>
+
+            <a th:href="@{/logout}" class="btn-logout">Salir</a>
+        </div>
+    </nav>
+</header>
 
 <div class="cv-container">
 
@@ -53,6 +57,16 @@
         <a th:href="@{/presentation/oferente/dashboard}" style="color: #a0aec0; text-decoration: none; font-size: 0.9em;">&larr; Volver al Dashboard</a>
     </div>
 </div>
+<footer class="footer-dark">
+    <div>
+        <strong>Bolsa de Empleo</strong><br>
+        Total Soft Inc.
+    </div>
+    <div style="text-align: right; line-height: 1.4;">
+        Contacto: info@bolsaempleo.local<br>
+        © 2026
+    </div>
+</footer>
 
 </body>
 </html>

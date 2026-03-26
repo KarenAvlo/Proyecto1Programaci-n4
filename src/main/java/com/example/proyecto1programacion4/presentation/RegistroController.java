@@ -60,7 +60,7 @@ public class RegistroController {
             }
 
             //  Encriptación de la contraseña (Vital para seguridad)
-            String claveEncriptada = passwordEncoder.encode(clave);
+//            String claveEncriptada = passwordEncoder.encode(clave); //Eleminada generaba una segunda encriptacion en logic Service.
 
             //  Creación y persistencia según el tipo
             if ("OFERENTE".equals(tipo)) {
@@ -68,7 +68,7 @@ public class RegistroController {
 
                 // Datos de la clase Usuario (Herencia)
                 o.setEmail(email);
-                o.setClave(claveEncriptada);
+                o.setClave(clave);
                 o.setTipo("OFERENTE");
 
                 // Datos específicos de Oferente (Requerimientos nuevos)
@@ -86,7 +86,7 @@ public class RegistroController {
 
                 // Datos de la clase Usuario (Herencia)
                 e.setEmail(email);
-                e.setClave(claveEncriptada);
+                e.setClave(clave);
                 e.setTipo("EMPRESA");
 
                 // Datos específicos de Empresa

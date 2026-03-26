@@ -32,9 +32,14 @@ public class Security implements UserDetailsService {
 
         if (usuario == null) {throw new UsernameNotFoundException("Usuario no encontrado: "+ email);}
 
+        System.out.println("DEBUG - Email intentando: " + email);
+        System.out.println("DEBUG - Hash recuperado de DB: " + usuario.getClave());
+        System.out.println("DEBUG - Longitud del hash: " + usuario.getClave().length());
+
         return User.builder()
                 .username(usuario.getEmail())
                 .password(usuario.getClave())
+                .disabled(!usuario.getEstado())
                 .authorities("ROLE_"+usuario.getTipo())
                 .build();
     }

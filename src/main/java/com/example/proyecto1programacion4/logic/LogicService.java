@@ -125,9 +125,7 @@ public class LogicService {
     }
 
     // --------------- LÓGICA DE USUARIOS / ADMIN ----------------
-    public List<Usuario> findAllUsuarios() {
-        return usuarioRepository.findAll();
-    }
+
 
     public void aprobarUsuario(String email) {
         Usuario u = usuarioRepository.findById(email).orElse(null);
@@ -149,8 +147,7 @@ public class LogicService {
         o.setEstado(false);
         o.setClave(passwordEncoder.encode(o.getClave()));
 
-        // Al guardar el oferente, JPA guarda automáticamente en la tabla 'usuario'
-        // y en la tabla 'oferente' por la herencia JOINED.
+
         oferenteRepository.save(o);
     }
 
@@ -180,20 +177,6 @@ public class LogicService {
     }
 
     //================PUESTOS=============================
-// Listar solo los puestos de una empresa específica
-    public List<Puesto> listarPuestosPorEmpresa(Empresa empresa) {
-        return puestoRepository.findByEmailEmpresa(empresa);
-    }
-
-    // Buscar un puesto por ID (útil para desactivar)
-    public Puesto buscarPuestoPorId(Integer id) {
-        return puestoRepository.findById(id).orElse(null);
-    }
-
-    // El método de guardar (que ya tienes) sirve para actualizar el estado 'activo'
-    public void actualizarPuesto(Puesto p) {
-        puestoRepository.save(p);
-    }
 
     // Busca la empresa para asignarla al puesto
     public Empresa buscarEmpresaPorEmail(String email) {
@@ -205,30 +188,10 @@ public class LogicService {
         return puestoRepository.save(puesto);
     }
 
-    // Guarda cada característica vinculada al puesto
-    public void guardarRequisito(Puesto puesto, String nombreCaracteristica, Integer nivel) {
-        //  Buscamos la entidad Caracteristica que coincida con el nombre seleccionado en el HTML
-
-        Caracteristica carac = caracteristicaRepository.findByNombre(nombreCaracteristica);
-
-        if (carac != null) {
-
-            PuestoCaracteristica pc = new PuestoCaracteristica();
-            pc.setIdPuesto(puesto); // Seteamos el puesto recién guardado
-            pc.setIdCaracteristica(carac); // Seteamos la habilidad técnica
-            pc.setNivelDeseado(nivel); // Seteamos el nivel (1-5)
-
-            // Guardamos en la tabla intermedia
-            puestoCaracteristicaRepository.save(pc);
-        }
-    }
-
-
     public List<Puesto> findPuestosPorEmpresa(String email) {
         Empresa e = empresaRepository.findById(email).orElse(null);
         return puestoRepository.findByEmailEmpresa(e);
     }
-
 
     public List<Caracteristica> listarCaracteristicasAdmin() {
 
@@ -362,16 +325,6 @@ public class LogicService {
 
 
     /*=======VISTA PRINCIPAL=============*/
-
-    public List<Puesto> listarPuestosPublicos() {
-        return puestoRepository.findAll().stream()
-                .filter(p -> p.getActivo() != null && p.getActivo()
-                        && "PUBLICA".equalsIgnoreCase(p.getTipoPublicacion()))
-                .sorted((p1, p2) -> p2.getFechaPublicacion().compareTo(p1.getFechaPublicacion()))
-                .limit(5)
-                .collect(Collectors.toList());
-    }
-
 
     public List<Puesto> listarPuestosParaOferenteLogueado() {
         return puestoRepository.findAll().stream()

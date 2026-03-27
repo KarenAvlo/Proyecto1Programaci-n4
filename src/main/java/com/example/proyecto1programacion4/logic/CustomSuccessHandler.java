@@ -25,7 +25,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         HttpSession session = request.getSession();
         String emailLogueado = authentication.getName();
 
-        // IMPORTANTE: Aquí guardamos un objeto o un mapa que tenga la propiedad 'correo'
+        // guardamos un objeto que tenga la propiedad 'correo'
         // Para que coincida con el HTML, vamos a guardar un mapa simple:
         java.util.Map<String, String> usuarioSesion = new java.util.HashMap<>();
         usuarioSesion.put("correo", emailLogueado);

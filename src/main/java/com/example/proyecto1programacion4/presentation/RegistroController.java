@@ -59,9 +59,6 @@ public class RegistroController {
                 return "OFERENTE".equals(tipo) ? "form_oferente" : "form_empresa";
             }
 
-            //  Encriptación de la contraseña (Vital para seguridad)
-//            String claveEncriptada = passwordEncoder.encode(clave); //Eleminada generaba una segunda encriptacion en logic Service.
-
             //  Creación y persistencia según el tipo
             if ("OFERENTE".equals(tipo)) {
                 Oferente o = new Oferente();
@@ -98,7 +95,7 @@ public class RegistroController {
                 service.registrarEmpresa(e); // Guarda en DB
             }
 
-            // Todo salió bien, redirigir al login con mensaje de éxito
+
             return "redirect:/login?success";
 
         } catch (Exception e) {

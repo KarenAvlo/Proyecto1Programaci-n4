@@ -23,7 +23,7 @@ public class IndexController {
             model.addAttribute("puestos", logicService.listarPuestosParaOferenteLogueado());
             model.addAttribute("logueado", true);
         } else {
-            // CAMBIO AQUÍ: Llamamos al método que limita a 5 y ordena por fecha
+
             model.addAttribute("puestos", logicService.listar5UltimosPuestosPublicos());
             model.addAttribute("logueado", false);
         }
@@ -33,7 +33,7 @@ public class IndexController {
     @GetMapping("/puestos/buscar")
     public String buscarPuestos(Model model) {
         model.addAttribute("categorias", logicService.listarCategoriasRaiz());
-        model.addAttribute("logicService", logicService); // <--- AGREGA ESTA LÍNEA
+        model.addAttribute("logicService", logicService);
         return "buscar_puestos";
     }
 

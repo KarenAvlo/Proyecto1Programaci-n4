@@ -54,16 +54,4 @@ public class Puesto {
     private List<PuestoCaracteristica> puestoCaracteristicas = new ArrayList<>();
 
 
-    public String getDetalleFormateado() {
-        if (puestoCaracteristicas == null || puestoCaracteristicas.isEmpty())
-            return "Sin requisitos específicos";
-
-        StringBuilder sb = new StringBuilder();
-        for (PuestoCaracteristica pc : puestoCaracteristicas) {
-            sb.append("• ").append(pc.getIdCaracteristica().getNombre())
-                    .append(" (nivel ").append(pc.getNivelDeseado()).append(")\n");
-        }
-        return sb.toString();
-    }
-
 }

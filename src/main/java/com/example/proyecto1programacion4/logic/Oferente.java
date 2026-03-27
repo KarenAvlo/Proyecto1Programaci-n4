@@ -11,7 +11,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "oferente")
 public class Oferente extends Usuario{
-    //@Id
+
     @Size(max = 20)
     @Column(name = "cedula", nullable = false, length = 20)
     private String cedula;

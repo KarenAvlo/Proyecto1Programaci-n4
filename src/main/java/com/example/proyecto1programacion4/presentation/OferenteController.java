@@ -2,7 +2,6 @@ package com.example.proyecto1programacion4.presentation;
 
 import com.example.proyecto1programacion4.logic.LogicService;
 import com.example.proyecto1programacion4.logic.OferenteCaracteristica;
-import com.example.proyecto1programacion4.logic.SecurityConfig;
 import com.example.proyecto1programacion4.logic.Oferente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
